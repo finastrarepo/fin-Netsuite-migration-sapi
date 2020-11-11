@@ -1,0 +1,38 @@
+sudo: false
+language:
+  java
+jdk:
+  - openjdk8
+
+cache:
+  directories:
+   - $HOME/.m2
+
+branches:
+  only:
+    - master
+    - release
+    - integrate
+    - develop
+
+before_install:
+  - git clone https://github.com/finastrarepo/finastra-maven-settings.git $HOME/finastra-maven-settings
+  - chmod ugo+x $HOME/finastra-maven-settings/setEnvironment.sh; . $HOME/finastra-maven-settings/setEnvironment.sh
+
+install:
+  - mvn -s $HOME/finastra-maven-settings/settings.xml install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
+
+
+script:
+  - | 
+     if [[ ("$TRAVIS_PULL_REQUEST" = "false") ]] 
+     then
+         mvn -s $HOME/finastra-maven-settings/settings.xml clean package deploy -DmuleDeploy ${anypoint_maven_additional_parameters}
+     fi 
+
+notifications:
+  email:
+    recipients:
+    - pravin.raikwar@finastra.com
+    on_success: always
+    on_failure: always

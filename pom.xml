@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.finastra</groupId>
+	<artifactId>fin-Netsuite-migration-sapi</artifactId>
+	<version>1.0.0</version>
+	<packaging>mule-application</packaging>
+
+	<name>fin-Netsuite-migration-sapi</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<cloudhub.businessGroup>Finastra</cloudhub.businessGroup>
+		<cloudhub.username>${anypoint_username}</cloudhub.username>
+		<cloudhub.password>${anypoint_password}</cloudhub.password>
+		<cloudhub.environment>${anypoint_environment}</cloudhub.environment>
+		<cloudhub.application.name>fin-Netsuite-Finance-sapi-1-0${anypoint_application_name_appender}</cloudhub.application.name>
+		<cloudhub.application.runtime>4.2.2</cloudhub.application.runtime>
+		<cloudhub.application.numberOfWorker>1</cloudhub.application.numberOfWorker>
+		<cloudhub.application.workerType>MICRO</cloudhub.application.workerType>
+		<cloudhub.application.objectstorev2>true</cloudhub.application.objectstorev2>
+		<app.runtime>4.2.2-hf2</app.runtime>
+		<mule.maven.plugin.version>3.3.5</mule.maven.plugin.version>
+		<munit.version>2.2.1</munit.version>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.mule.tools.maven</groupId>
+				<artifactId>mule-maven-plugin</artifactId>
+				<version>${mule.maven.plugin.version}</version>
+				<extensions>true</extensions>
+				<configuration>
+					<cloudHubDeployment>
+				      <uri>https://anypoint.mulesoft.com</uri>
+				      <businessGroup>${cloudhub.businessGroup}</businessGroup>
+				      <username>${cloudhub.username}</username>
+				      <password>${cloudhub.password}</password>
+				      <environment>${cloudhub.environment}</environment>
+				      <applicationName>${cloudhub.application.name}</applicationName>
+				      <muleVersion>${cloudhub.application.runtime}</muleVersion>
+				      <region>eu-west-2</region>
+				      <workers>${cloudhub.application.numberOfWorker}</workers>
+				      <workerType>${cloudhub.application.workerType}</workerType>
+				      <objectStoreV2>${cloudhub.application.objectstorev2}</objectStoreV2>
+				      <properties>
+				        <anypoint_application_encryption_key>${anypoint_application_encryption_key}</anypoint_application_encryption_key>
+				        <anypoint_application_environment>${anypoint_application_environment}</anypoint_application_environment>
+				        <anypoint.platform.client_id>753861dc09784be5a94854046768a8ae</anypoint.platform.client_id>
+                        <anypoint.platform.client_secret>0E04aD982C06472bA966630D3C0f3697</anypoint.platform.client_secret>
+                        <anypoint.platform.config.analytics.agent.enabled>true</anypoint.platform.config.analytics.agent.enabled>
+                        <anypoint.platform.visualizer.layer>System Layer</anypoint.platform.visualizer.layer>
+				      </properties>
+				    </cloudHubDeployment>
+					<classifier>mule-application</classifier>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>com.mulesoft.munit.tools</groupId>
+				<artifactId>munit-maven-plugin</artifactId>
+				<version>${munit.version}</version>
+				<executions>
+					<execution>
+						<id>test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>test</goal>
+							<goal>coverage-report</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<coverage>
+						<runCoverage>true</runCoverage>
+						<formats>
+							<format>html</format>
+						</formats>
+					</coverage>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<dependencies>
+	<!-- 	<dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>mule-salesforce-connector</artifactId>
+            <version>9.7.10</version>
+            <classifier>mule-plugin</classifier>
+        </dependency> -->
+    	
+    	 	<dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>mule-salesforce-connector</artifactId>
+            <version>10.4.3</version>
+            <classifier>mule-plugin</classifier>
+        </dependency> 
+    	<dependency>
+            <groupId>org.mule.module</groupId>
+            <artifactId>mule-java-module</artifactId>
+            <version>1.2.6</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+       
+         
+	<dependency>
+		<groupId>commons-io</groupId>
+		<artifactId>commons-io</artifactId>
+		<version>2.6</version>
+	</dependency>
+    	<dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-apikit-module</artifactId>
+            <version>1.3.16</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>b969ea8e-6463-4f9b-9027-5cfaae2d33c2</groupId>
+            <artifactId>common-error-handler</artifactId>
+            <version>3.0.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+       	
+
+        <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.1</version>
+       </dependency>  
+    	<dependency>
+            <groupId>com.mulesoft.modules</groupId>
+            <artifactId>mule-secure-configuration-property-module</artifactId>
+            <version>1.2.3</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+       
+    	<dependency>
+            <groupId>com.mulesoft.munit</groupId>
+            <artifactId>munit-runner</artifactId>
+            <version>2.2.1</version>
+            <classifier>mule-plugin</classifier>
+            <scope>test</scope>
+        </dependency>
+    
+    	
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-wsc-connector</artifactId>
+            <version>1.6.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<!-- <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-scripting-module</artifactId>
+            <version>1.1.6</version>
+            <classifier>mule-plugin</classifier>
+        </dependency> -->
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-objectstore-connector</artifactId>
+            <version>1.1.5</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+  
+    	<dependency>
+            <groupId>b969ea8e-6463-4f9b-9027-5cfaae2d33c2</groupId>
+            <artifactId>common-logging-framework</artifactId>
+            <version>1.0.4</version>
+            <classifier>custom</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <version>1.5.22</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>anypoint-mq-connector</artifactId>
+            <version>3.1.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        <dependency>	
+            <groupId>com.mulesoft.munit</groupId>	
+            <artifactId>munit-tools</artifactId>	
+            <version>2.2.1</version>	
+            <classifier>mule-plugin</classifier>	
+            <scope>test</scope>	
+        </dependency>
+    </dependencies>
+
+
+	<repositories>
+		<repository>
+			<id>anypoint-exchange-v2</id>
+			<name>Anypoint Exchange</name>
+			<url>https://maven.anypoint.mulesoft.com/api/v2/maven</url>
+			<layout>default</layout>
+		</repository>
+		<repository>
+			<id>mulesoft-releases</id>
+			<name>MuleSoft Releases Repository</name>
+			<url>https://repository.mulesoft.org/releases/</url>
+			<layout>default</layout>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>mulesoft-releases</id>
+			<name>mulesoft release repository</name>
+			<layout>default</layout>
+			<url>https://repository.mulesoft.org/releases/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
