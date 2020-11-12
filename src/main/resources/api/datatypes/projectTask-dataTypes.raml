@@ -1,0 +1,41 @@
+#%RAML 1.0 DataType
+type: object
+displayName: ProjectTask
+description: ProjectTask dataType
+
+properties:
+  name: 
+    type: string | nil
+    required: false
+    description: name
+  nsProjectInternalId: 
+    type: string | nil
+    required: false
+    description: NS Project Int ID
+  constraintTypeCode: 
+    type: string | nil
+    required: false
+    description: Constraint Type Code
+    
+  startDate: 
+    type: string | nil
+    required: false
+    description: StartDate   
+  statusCode: 
+    type: string | nil
+    required: false
+    description: status Code
+    
+  dropDeadDate: 
+    type: string | nil
+    required: false
+    description: drop Dead Date   
+  
+  finishNoLaterThanDate: 
+    type: string | nil
+    required: false
+    description: finish No LaterThan Date
+  id: 
+    type: string | nil
+    required: false
+    description: id

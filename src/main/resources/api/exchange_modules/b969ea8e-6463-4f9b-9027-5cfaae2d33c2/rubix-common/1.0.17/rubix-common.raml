@@ -1,0 +1,20 @@
+#%RAML 1.0 Library
+usage: This Library will be used to include various re-usable codes to be implemented in the API specifications
+resourceTypes:
+  collection: 
+    post:
+    
+      body:
+        application/json:
+          type: <<requestType>>
+          example: <<requestExample>>
+          
+      responses:
+        200:
+          body:
+            application/json:
+              example: <<responseExample>>
+traits:
+  error-handler: !include error-handling.raml
+  client-id-required: !include client-id-required.raml
+  jwt: !include jwt.raml

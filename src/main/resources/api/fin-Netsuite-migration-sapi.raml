@@ -1,0 +1,30 @@
+#%RAML 1.0
+title: fin-Netsuite-migration-sapi
+description: This is a system api for NS and it will be called by process api. This specifications contains details for project object peresent in NS.
+
+protocols:
+  - https
+  - http
+mediaType: 
+  - application/json
+types:
+  project: !include datatypes/projectSetup-request.raml
+uses:
+  lib: /exchange_modules/b969ea8e-6463-4f9b-9027-5cfaae2d33c2/rubix-common/1.0.17/rubix-common.raml
+
+baseUri: http://localhost:8081/v1.0  
+
+/projectSetup:
+  description: This endpoint will accept request to sync project object information in NS system.
+  post:
+    displayName: upsert project details
+    body:
+      application/json:
+        type: project
+        example: !include examples/projectSetup-request-example.raml           
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/projectSetup-response-example.raml
+  is: [lib.error-handler] 

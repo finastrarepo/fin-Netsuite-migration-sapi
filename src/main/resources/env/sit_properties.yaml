@@ -1,0 +1,63 @@
+##Http Configuration
+http:
+  host: "0.0.0.0"
+  port: "8081"
+
+#method for generating token
+  methodPost: "POST"
+  methodGet: "GET"
+  methodPut: "PUT"
+  methodDelete: "DELETE"
+  methodPatch: "PATCH"
+
+## http request configuration
+httpRequest:
+  responseTimeout: "30000"
+
+#APP Id for autodiscovery
+apiId: "16350717"
+
+target: "Netsuite"
+
+tokenEndpoint: "https://test.salesforce.com/services/oauth2/token"
+principal: "mulesoftintegration@finastra.com.rubix.kimble"
+password: "![W7qwlCe9qet33z6Sj7CrKg==]"
+keyStore: "00D8E0000001Xsw.jks"
+consumerKey: "![LoVS55alkdhKC4ajjf6Ypo2NdjYGdU229X9kpew50d+RBSQvMRMn8lIkFCGS0Phon+xtKM5ykN9bbpKFsAZ3l8J03dbEY80uIu7VdfX/DIL8mnJoHBR4+KSH74ki/MFV]"
+realm: "3431250_SB2"
+#####Netsuite Invoice Values for SOAP request
+soap:
+  wsdlUrl: "https://webservices.netsuite.com/wsdl/v2020_1_0/netsuite.wsdl"
+  wsdlAddress: "https://3431250-sb2.suitetalk.api.netsuite.com/services/NetSuitePort_2020_1"
+  wsdlService: "NetSuiteService"
+  wsdlPort: "NetSuitePort"
+  wsdlTimeout: "300000"
+  wsdlAddOperation: "upsertList"
+  account: "3431250_SB2"
+  roleInternalId: "1281"
+  applicationId: "AF5CDD89-BBFA-45D8-81D5-536506817952"
+  algorithm: "HMAC_SHA256"
+  wsdlSearchOperation: "search"  
+####LOGGER CONFIGURATION FOR ERROR PLUGIN
+api:
+  name: "fin-netsuite-migration-sapi"
+  version: "v1.0"  
+###Kimble Interfaces Netsuite Details For WSDL Call
+kimbleSoapNetsuite:
+  consumerKey: "![2/yZ5Dpz19jg4Xqf8EzuZLFJEJwgJCb1zcj0Ow2TT9fvdKsq2P0lvyiHN6L8wTOKFsZQ4rXSRyga4pIwe6mrjW14LGGKE1egSqccZVcQ0Q0=]"
+  consumerSecret: "![mGQZ+k6y9jEKGEmjuzdUUhXKXAGZ7KwxlVDMYq7XuFlpTdqdtyihIhU/JxINuyF1r36AbKzvQNkwGbKu6wr5qxiHVNuy/TvrgCDdO97xLj4=]"
+  token: "![rLai+tbAnEv7HGJ2gqlFZOuvhR/UrlL5xCjHsvpSKMDe/ulASei3AEmo5wBvWYECAqcuWBIz3f9mAGT/qtO4EABhW/LoujFZbnAnbg61phc=]"
+  tokenSecret: "![ud+rWuqCZvWBJP5TzdeiHHlkRpxL+ttp0wv/TFPP0Kez12guGzi8LAJhNMe2ERwlGMmjXKDE2iHPstqUykC7xEYMHwrQlbdFXgd+MjecTNo=]"
+  realm: "3431250_SB2"
+  
+###Kimble Interfaces Netsuite Details For Rest Call
+kimbleRestNetsuite:
+  consumerKey: "![bbVFNJPH4THcd6peshfXlJO7sMu0h59G9JDCUfJjgRcgfeBIzcOPR7dv9lio5T7ZysV+R8deqVet4HG+gAWS4N2f0C3r0vWvhxvv9j42DHE=]"
+  consumerSecret: "![03G8hRpsI2CO8bAQNbtaMgicAEQfvTtC5j1XQop3GHVRRZ4Da14SgrG5FYSXb8DWKLdo1xLfjNZLgU4I0wVhtOtix/XWu4AlOJ9pzhPQh3E=]"
+  token: "![jXDuk/cgy6hp2euwSf1rHPJI2GOkn0Zm43e28WyHB8S55YDHIrbxREe+M5TTiP92a5+zgA5KbhLXwkeQPpUHaOlPcMWa26rmcqgt8dBrgJ4=]"
+  tokenSecret: "![mQzk/9CEv42mAuWB4sM1avJIhbCjMyZFC92gLR0D4S1CcFR2k2EgLy+GulfnrgcYHifM8HUlohwhzqTvDrzbPqrbqQ5kAPxUtf6Y48UCniQ=]"
+  realm: "3431250_SB1"
+  urlHost: "3431250-sb1.suitetalk.api.netsuite.com"
+  urlPathAssignment: "/services/rest/record/v1/job/"    
+  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"
+  urlPathDepartment: "/services/rest/record/v1/department/eid:"   

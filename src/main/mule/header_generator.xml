@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+
+<mule xmlns:java="http://www.mulesoft.org/schema/mule/java" xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+    xmlns:netsuite="http://www.mulesoft.org/schema/mule/netsuite"
+    xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:tls="http://www.mulesoft.org/schema/mule/tls" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/tls http://www.mulesoft.org/schema/mule/tls/current/mule-tls.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/netsuite http://www.mulesoft.org/schema/mule/netsuite/current/mule-netsuite.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
+	
+	<sub-flow name="oauth-header-generator-soapHeader" doc:id="b7211dc6-0c89-4b2b-970e-b801b4ba428f" >
+	<logger level="INFO" doc:name="Logger" doc:id="c5247ab0-c7db-4c84-b107-9ea4c9080c4a" message="#[p('secure::kimbleSoapNetsuite.consumerKey')]"/>
+		<java:new constructor="OAuthTokenBuilderHash()" doc:name="New" doc:id="426c88ff-6453-405e-a25c-64b6998bb8ff" class="com.mule.oauth.OAuthTokenBuilderHash" target="inst"/>
+<java:invoke doc:name="Invoke" doc:id="6daedb68-2616-474f-8279-b009320b7531" class="com.mule.oauth.OAuthTokenBuilderHash" instance="#[vars.inst]" method="computeSignature(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" target="oAuthHeaderFinal">
+<java:args ><![CDATA[#[{
+	arg0: p('secure::kimbleSoapNetsuite.realm'),
+	arg1: p('secure::kimbleSoapNetsuite.consumerKey'),
+	arg2: p('secure::kimbleSoapNetsuite.consumerSecret'),
+	arg3: p('secure::kimbleSoapNetsuite.token'),
+	arg4: p('secure::kimbleSoapNetsuite.tokenSecret')
+}]]]></java:args>
+</java:invoke>
+	
+	</sub-flow>
+	<sub-flow name="oauth-header-generator-restKimble" doc:id="60a51065-8489-404d-b628-e0c48c64f58e" >
+		<java:new doc:name="New" doc:id="fb97fa08-ca0e-40f3-804d-0fdf4d548c56" class="com.mule.oauth.OAuthTokenBuilder" constructor="OAuthTokenBuilder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" target="inst">
+			<java:args><![CDATA[#[{ arg0: p('secure::kimbleRestNetsuite.consumerKey'), arg1:p('secure::kimbleRestNetsuite.consumerSecret'), arg2:p('secure::kimbleRestNetsuite.token'), arg3:p('secure::kimbleRestNetsuite.tokenSecret'), arg4:p('secure::kimbleRestNetsuite.realm') }]]]></java:args>
+		</java:new>
+		<ee:transform doc:name="Transform Message" doc:id="2242a484-fa7f-4705-a872-ee652ac48499">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+vars.OAuthHeader]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<java:invoke doc:name="Invoke" doc:id="92dae0ae-cc4e-426b-a7d6-4016a8dcdbc3" class="com.mule.oauth.OAuthTokenBuilder" instance="#[vars.inst]" target="oAuthHeaderFinal" method="generateHeaderNs(java.lang.String,java.lang.String)">
+			<java:args><![CDATA[#[{ arg0: vars.restUrl.method , arg1: vars.restUrl.url }]]]></java:args>
+			
+		</java:invoke>
+	</sub-flow>
+</mule>
