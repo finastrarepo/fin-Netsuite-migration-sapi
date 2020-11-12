@@ -12,7 +12,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	<sub-flow
 		name="Job-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
-		<set-variable value="#[payload]" doc:name="jobReqData"
+		<set-variable value="#[payload.job]" doc:name="jobPayload"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="jobPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -156,6 +156,13 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : "true"},
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Synced_To_SFDC"):{ value : "false"},
                         
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custentity_oa_project_stage"):{ value @("internalId" : vars.jobPayload.openAirProjectStageInternalId ): ""},
+                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custentity_sfdcopportunitystage"):{ value : vars.jobPayload.sfdcOpportunityStage},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custentity_region"):{ value @("internalId": vars.jobPayload.projectRegionInternalId ) : ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custentity_product"):{ value @("internalId" : vars.jobPayload.projectProductInternalId ): ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custentity_costcentre"):{ value @("internalId" : vars.jobPayload.projectCostCentreInternalId ): ""},
+                        
+                        
                         customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_SFDC_Opportunity_stage"):{ value : vars.jobPayload.sfdcOpportunityStage},
                         
                         customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_SFDC_Opportunity_Close_Date"):{ value : vars.jobPayload.sfdcOpportunityCloseDate ++ "T00:00:00.000" },
@@ -178,7 +185,7 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
                         
                         customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_PS_Forecast_Probability"):{ value : vars.jobPayload.psForecastProbability },
                         
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_PS_Forecast_Probability"):{ value : vars.jobPayload.sfdcOpportunityProbability },
+                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custentity_sfdc_opp_probability "):{ value : vars.jobPayload.sfdcOpportunityProbability },
                        
                         
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Export_to_OpenAir"):{ value : vars.jobPayload.exportToOpenAir },
@@ -225,12 +232,6 @@ payload]]></ee:set-variable>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger - Full payload "
 			doc:id="24019308-cfb6-46bc-be0b-1b949ae89fb3" message="#[payload]" />
-		<logger level="INFO" doc:name="Logger- Envelope body"
-			doc:id="c25fb257-b581-4488-8396-ec489b84b83b"
-			message="#[payload.Envelope.Body]" />
-		<logger level="INFO" doc:name="soapHeader"
-			doc:id="81e972af-61a1-4362-8ce8-0ba4be32a5df"
-			message="#[vars.soapHeader]" />
 		<try doc:name="Try" doc:id="125c3065-673f-449e-9d26-603eff400b77">
 			
 	
@@ -260,7 +261,8 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 
 ---
 {
-	netsuiteInternalId: if(vars.responsePayload.body.upsertListResponse.writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId != null) vars.responsePayload.body.addResponse.ns0#writeResponse.ns0#baseRef.@internalId else vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message
+	netsuiteInternalId: if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null )  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId else (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message)
+
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables>

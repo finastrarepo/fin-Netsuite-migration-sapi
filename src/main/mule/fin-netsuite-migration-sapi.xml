@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
-
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd ">
     <flow name="fin-Netsuite-migration-sapi-main">
         <http:listener config-ref="fin-Netsuite-migration-sapi-httpListenerConfig" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
@@ -41,7 +40,7 @@ output application/json
         </error-handler>
     </flow>
     <flow name="post:\projectSetup:application\json:fin-Netsuite-migration-sapi-config">
-        <logger level="INFO" doc:name="Logger" doc:id="1f211968-afdb-468b-a6ab-936af0fcb098" message="@@@@@@Inbound request received at Main@@@@@@@@@@@@"/>
-		<flow-ref doc:name="NS-Integration-projectSetup" doc:id="73b2fca2-82d1-4053-a3b7-ad175f5a2fbd" name="netsuite-integration-projectSetup-flowSub_Flow"/>
+        <logger level="INFO" doc:name="Logger" doc:id="1f211968-afdb-468b-a6ab-936af0fcb098" message="@@@@@@Inbound request received at Main@@@@@@@@@@@@" />
+        <flow-ref doc:name="NS-Integration-projectSetup" doc:id="73b2fca2-82d1-4053-a3b7-ad175f5a2fbd" name="netsuite-integration-projectSetup-flowSub_Flow" />
     </flow>
 </mule>

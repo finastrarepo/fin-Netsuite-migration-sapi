@@ -22,7 +22,8 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 				<flow-ref doc:name="Job-Implementation" doc:id="5f5b0d32-754c-4175-accb-580c4c8b9e3e" name="Job-Implementation"/>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="4f27c062-4c8f-44a9-8fad-ba66c7ab08de" message="Non Job"/>
+				<logger level="INFO" doc:name="Logger" doc:id="4f27c062-4c8f-44a9-8fad-ba66c7ab08de" message="Project task "/>
+				<flow-ref doc:name="ProjectTask-Implementation" doc:id="22d19668-24b6-4f32-8902-da57a22a0b83" name="ProjectTask-Implementation"/>
 			</otherwise>
 		</choice>
 	</sub-flow>
