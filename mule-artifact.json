@@ -1,3 +1,12 @@
 {
-  "minMuleVersion": "4.2.2-hf2"
+  "minMuleVersion": "4.2.2",
+  "classLoaderModelLoaderDescriptor": {
+        "id": "mule",
+        "attributes": {
+            "exportedPackages": [
+                "com.mule.oauth"
+            ]
+        }
+    },
+    "secureProperties": ["anypoint.platform.client_id","anypoint.platform.client_secret","anypoint_application_encryption_key","anypoint_application_environment"]
 }

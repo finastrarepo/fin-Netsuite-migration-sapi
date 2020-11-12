@@ -11,7 +11,6 @@ http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mul
 http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/java/current/mule-java.xsd">
 	
 	<sub-flow name="oauth-header-generator-soapHeader" doc:id="b7211dc6-0c89-4b2b-970e-b801b4ba428f" >
-	<logger level="INFO" doc:name="Logger" doc:id="c5247ab0-c7db-4c84-b107-9ea4c9080c4a" message="#[p('secure::kimbleSoapNetsuite.consumerKey')]"/>
 		<java:new constructor="OAuthTokenBuilderHash()" doc:name="New" doc:id="426c88ff-6453-405e-a25c-64b6998bb8ff" class="com.mule.oauth.OAuthTokenBuilderHash" target="inst"/>
 <java:invoke doc:name="Invoke" doc:id="6daedb68-2616-474f-8279-b009320b7531" class="com.mule.oauth.OAuthTokenBuilderHash" instance="#[vars.inst]" method="computeSignature(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" target="oAuthHeaderFinal">
 <java:args ><![CDATA[#[{

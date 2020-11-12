@@ -15,10 +15,10 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 		<set-variable value="#[payload]" doc:name="jobReqData"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="jobPayload" mimeType="application/json" />
-		<logger level="INFO" doc:name="Logger" doc:id="c8520161-0a08-474a-83e5-22ad73d65e83" message="entry for Job"/>
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
 			doc:id="abad57fd-6b31-46b4-8c80-f1017260fb84"
 			name="oauth-header-generator-soapHeader" />
+		<logger level="INFO" doc:name="Logger" doc:id="62196025-e7a8-49eb-b063-e6588a2840bd" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" message="#[vars.oAuthHeaderFinal]"/>
 		<ee:transform doc:name="requestPayload"
 			doc:id="931d7eb3-7f83-4f23-b468-2dabbabaf448">
 			<ee:message>
