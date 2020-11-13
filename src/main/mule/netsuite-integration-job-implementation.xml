@@ -256,13 +256,13 @@ payload]]></ee:set-variable>
 		<ee:transform doc:name="netsuiteInternalId" doc:id="f75daec6-617f-4382-bb9b-179ec6a73a22">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
-output application/json 
+output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
-
 ---
 {
-	netsuiteInternalId: if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null )  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId else (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message)
-
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	syncedToNS: true
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables>
