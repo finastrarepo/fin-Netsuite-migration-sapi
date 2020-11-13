@@ -52,12 +52,11 @@ kimbleSoapNetsuite:
   
 ###Kimble Interfaces Netsuite Details For Rest Call
 kimbleRestNetsuite:
-  consumerKey: "![bbVFNJPH4THcd6peshfXlJO7sMu0h59G9JDCUfJjgRcgfeBIzcOPR7dv9lio5T7ZysV+R8deqVet4HG+gAWS4N2f0C3r0vWvhxvv9j42DHE=]"
-  consumerSecret: "![03G8hRpsI2CO8bAQNbtaMgicAEQfvTtC5j1XQop3GHVRRZ4Da14SgrG5FYSXb8DWKLdo1xLfjNZLgU4I0wVhtOtix/XWu4AlOJ9pzhPQh3E=]"
-  token: "![jXDuk/cgy6hp2euwSf1rHPJI2GOkn0Zm43e28WyHB8S55YDHIrbxREe+M5TTiP92a5+zgA5KbhLXwkeQPpUHaOlPcMWa26rmcqgt8dBrgJ4=]"
-  tokenSecret: "![mQzk/9CEv42mAuWB4sM1avJIhbCjMyZFC92gLR0D4S1CcFR2k2EgLy+GulfnrgcYHifM8HUlohwhzqTvDrzbPqrbqQ5kAPxUtf6Y48UCniQ=]"
-  realm: "3431250_SB1"
-  urlHost: "3431250-sb1.suitetalk.api.netsuite.com"
-  urlPathAssignment: "/services/rest/record/v1/job/"    
-  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"
-  urlPathDepartment: "/services/rest/record/v1/department/eid:"   
+  consumerKey: "![2/yZ5Dpz19jg4Xqf8EzuZLFJEJwgJCb1zcj0Ow2TT9fvdKsq2P0lvyiHN6L8wTOKFsZQ4rXSRyga4pIwe6mrjW14LGGKE1egSqccZVcQ0Q0=]"
+  consumerSecret: "![mGQZ+k6y9jEKGEmjuzdUUhXKXAGZ7KwxlVDMYq7XuFlpTdqdtyihIhU/JxINuyF1r36AbKzvQNkwGbKu6wr5qxiHVNuy/TvrgCDdO97xLj4=]"
+  token: "![rLai+tbAnEv7HGJ2gqlFZOuvhR/UrlL5xCjHsvpSKMDe/ulASei3AEmo5wBvWYECAqcuWBIz3f9mAGT/qtO4EABhW/LoujFZbnAnbg61phc=]"
+  tokenSecret: "![ud+rWuqCZvWBJP5TzdeiHHlkRpxL+ttp0wv/TFPP0Kez12guGzi8LAJhNMe2ERwlGMmjXKDE2iHPstqUykC7xEYMHwrQlbdFXgd+MjecTNo=]"
+  realm: "3431250_SB2"
+  urlHost: "3431250-sb2.suitetalk.api.netsuite.com"
+  urlPathAssignment: "/services/rest/record/v1/job/"   
+  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"   

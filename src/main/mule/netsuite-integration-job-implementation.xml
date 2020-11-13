@@ -269,6 +269,72 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[payload]"/>
+	
+	<logger level="INFO" doc:name="Logger for error code" doc:id="9fcd7b22-fc2c-4a9e-9349-843ec1d4ad02" message="#[%dw 2.0
+output application/json
+---
+{
+       (code: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code) if (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code != null)
+       
+}]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7eed8b5f-1fae-4153-aafc-7d4ebf3021be" message='#[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]'/>
+		<ee:transform doc:name="netsuiteInternalId" doc:id="d16274f8-6a3c-41e5-9cbc-643d51b65000">
+			<ee:message>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="isSuccess" ><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	
+	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
+}]]></ee:set-variable>
+				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="9f0dce93-9754-4edb-b817-e3e3bf3ea175" >
+			<when expression="#[vars.isSuccess.message == 'true']">
+				<flow-ref doc:name="job_rest_call_" doc:id="c4ca41c9-b02d-4605-8756-6a344850cf5e" name="job_rest_call_" />
+				<ee:transform doc:name="Transform Message" doc:id="4e92bc6c-3c64-4b69-9a5d-4e377a727861" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+---
+{
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	syncedToNS: true,
+	nsCustomProjectNo : vars.restRsp.entityId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
+			</otherwise>
+		</choice>
+	
 	</sub-flow>
 	
 	

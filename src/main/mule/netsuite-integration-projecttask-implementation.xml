@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
 	
 	
 		
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e1aeb3b3-19af-4564-8b6e-ae62adfabaa3">
+		<http:request-connection protocol="HTTPS"/>
+	</http:request-config>
 	<sub-flow
 		name="ProjectTask-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
@@ -176,10 +180,35 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 			</ee:message>
 			<ee:variables>
+				<ee:set-variable variableName="rsp" ><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var successrsp = {
+	netsuiteInternalId : vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId,
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+	syncedToNS : true
+}
+
+var failurersp = {
+	netsuiteInternalId: null,
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ,
+	errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+	syncedToNS: false
+}
+---
+
+	 if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null) successrsp else failurersp 
+]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[payload]"/>
-		<logger level="INFO" doc:name="Logger-rsp" doc:id="45bdc328-f011-406f-98fb-140453c81c57" message="#[vars.rsp]"/>
+		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[vars.rsp]"/>
+	
+	
+
+		
+	
 	</sub-flow>
 	
 	
