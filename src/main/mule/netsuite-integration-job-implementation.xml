@@ -238,7 +238,7 @@ payload]]></ee:set-variable>
 			<wsc:consume doc:name="Invoke-Job"
 				doc:id="10313adb-0e20-4e8f-a4fc-e5fa46d62620"
 				config-ref="Web_Service_Consumer_Config"
-				operation="${soap.wsdlAddOperation}" target="responsePayload">
+				operation="${soap.wsdlUpsertOperation}" target="responsePayload">
 			<wsc:message>
 					<wsc:body><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
 					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
@@ -258,6 +258,7 @@ payload]]></ee:set-variable>
 				<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+
 ---
 {
 	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,

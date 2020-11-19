@@ -148,10 +148,10 @@ payload]]></ee:set-variable>
 		<try doc:name="Try" doc:id="125c3065-673f-449e-9d26-603eff400b77">
 			
 	
-			<wsc:consume doc:name="Invoke-Job"
+			<wsc:consume doc:name="Invoke-ProjectTask"
 				doc:id="10313adb-0e20-4e8f-a4fc-e5fa46d62620"
 				config-ref="Web_Service_Consumer_Config"
-				operation="${soap.wsdlAddOperation}" target="responsePayload">
+				operation="${soap.wsdlUpsertOperation}" target="responsePayload">
 			<wsc:message>
 					<wsc:body><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
 					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
