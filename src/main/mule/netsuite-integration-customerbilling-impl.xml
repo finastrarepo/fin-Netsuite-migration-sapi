@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
 	
 	<sub-flow
 		name="customerBilling-Implementation"
@@ -34,6 +35,7 @@ ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns3 urn:messages.platform.webservices.netsuite.com
 ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
 
 
 ---
@@ -92,45 +94,38 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 					//},
 					
 				ns13#name: vars.customerBillingPayload.name  ,
-                ns13#recType @("internalId":449 ) : "" ,				
+                ns13#recType @("internalId":402 ) : "" ,				
 			
                 ns13#customFieldList:{
                 	
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.nsProjectInternalId ) : ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_project"):{ value @("internalId" : vars.customerBillingPayload.nsProjectInternalId ) : ""},
                         
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : "true" },
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exportedfromsfdc"):{ value : "true" },
                         
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"Synced_to_SFDC"):{ value : "false"},
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_syncedtosfdc"):{ value : "false"},
                         
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : vars.customerBillingPayload.initialAmount},
+                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custrecord_cbs_initial_amount"):{ value : vars.customerBillingPayload.initialAmount},
                         
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "internalId":"2520"):{ value : "false"},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_initial_payment_terms"):{ value @("internalId" : vars.customerBillingPayload.initialPaymentTermsInternalId ) : ""},
                         
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "internalId":"2519"):{ value  : "true" },
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_cbs_public"):{ value @("internalId" : vars.customerBillingPayload.public ) : ""},
                         
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.initialPaymentTermsInternalId ) : ""},
+                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custrecord_cbs_line_amount"):{ value : vars.customerBillingPayload.lineAmount },
                         
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.public ) : ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_line_payment_terms"):{ value @("internalId" : vars.customerBillingPayload.linePaymentTermsInternal ) : ""},
                         
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : vars.customerBillingPayload.lineAmount },
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneInternalId ) : ""},
                         
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.linePaymentTermsInternal ) : ""},
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_line_est_completion_date"):{ value : vars.customerBillingPayload.lineEstimatedCompletionDate + "T00:00:00.000Z" },
                         
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneInternalId ) : ""},
+                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_comment"):{ value : vars.customerBillingPayload.lineComment },
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "internalId":"2529"):{ value : vars.customerBillingPayload.lineEstimatedCompletionDate + "T00:00:00.000Z" },
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_sales_order"):{ value @("internalId" : vars.customerBillingPayload.salesOrderInternalId ) : ""},
                         
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : vars.customerBillingPayload.lineComment },
+                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone_sequence"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneSequence ) : ""},
                         
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.salesOrderInternalId ) : ""},
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneSequence ) : ""},
-                        
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : vars.customerBillingPayload.lineDropDeadDate + "T00:00:00.000Z"}
-                        
-                        
-                        
-                        
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_drop_dead_date"):{ value : vars.customerBillingPayload.lineDropDeadDate + "T00:00:00.000Z"}
+                                                                       
 }
 
 }
@@ -245,7 +240,6 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="16551028-48ac-4237-8cc5-ec8aec32270e" >
 			<when expression="#[vars.isSuccess.message == 'true']">
-				<flow-ref doc:name="job_rest_call_" doc:id="b9d26d96-e0e9-4cf7-bfa9-73fb7c18f645" name="job_rest_call_" />
 				<ee:transform doc:name="Transform Message" doc:id="2b7dc72e-d8ee-4cc0-82b6-f5a4288d10ba" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -253,19 +247,32 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
-	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
+	nsCustomerBilling: {
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+		netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+		syncedToNS: true
+	}
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
+				<anypoint-mq:publish doc:name="Publish" doc:id="b74af345-85f6-49d6-a51e-e31dab4ae9a8" config-ref="Anypoint_MQ_Config" destination="project-setup-res-queue"/>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="5e1b4d8b-6bfb-43f8-b8e1-5eeb3bc71710">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<anypoint-mq:publish doc:name="Publish" doc:id="1f19dcb3-712f-4091-ac55-6b5d71f034e7" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue"/>
 			</otherwise>
 		</choice>
+		<logger level="INFO" doc:name="Logger" doc:id="f300ee29-0599-4224-8eb1-ab8da6bbf15a" />
 	
 	</sub-flow>
 	

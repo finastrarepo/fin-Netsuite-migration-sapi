@@ -37,89 +37,86 @@ ns ns3 urn:messages.platform.webservices.netsuite.com
 ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
-
-
 ---
 //payload.ns0#Envelope.ns0#Body.add.record.itemList
 {
-    soap#Envelope @("xmlns:S":"http://schemas.xmlsoap.org/soap/envelope/" ): {
-              soap#Header:{
-            urn#tokenPassport:{
-                ns8#account : p('kimbleSoapNetsuite.realm'),
-                ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
-                ns8#token: p('secure::kimbleSoapNetsuite.token'),
-                ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
-                ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
-                ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2] },
-                
-       ns1#preferences :{
-        ns2#ignoreReadOnlyFields  :true } ,
-   
-    ns3#searchPreferences  :{
-        ns4#bodyFieldsOnly : true ,
-        ns5#pageSize :50   }
- },
-        
-    
-    soap#Body:{
-        ns24#upsertList @("xmlns:ns5":"urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
-		"xmlns:ns6":"urn:relationships_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns3":"urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
-		"xmlns:ns4":"urn:communication_2020_1.general.webservices.netsuite.com" ,
-		"xmlns:ns9":"urn:sales_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns7":"urn:support_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns8":"urn:accounting_2020_1.lists.webservices.netsuite.com" ,
+	soap#Envelope @("xmlns:S": "http://schemas.xmlsoap.org/soap/envelope/"): {
+		soap#Header: {
+			urn#tokenPassport: {
+				ns8#account: p('kimbleSoapNetsuite.realm'),
+				ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
+				ns8#token: p('secure::kimbleSoapNetsuite.token'),
+				ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
+				ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
+				ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2]
+			},
+			ns1#preferences: {
+				ns2#ignoreReadOnlyFields: true
+			},
+			ns3#searchPreferences: {
+				ns4#bodyFieldsOnly: true,
+				ns5#pageSize: 50
+			}
+		},
+		soap#Body: {
+			ns24#upsertList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
+		"xmlns:ns6": "urn:relationships_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns3": "urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
+		"xmlns:ns4": "urn:communication_2020_1.general.webservices.netsuite.com" ,
+		"xmlns:ns9": "urn:sales_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns7": "urn:support_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns8": "urn:accounting_2020_1.lists.webservices.netsuite.com" ,
 		"xmlns": "urn:core_2020_1.platform.webservices.netsuite.com",
-		"xmlns:ns19":"urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns18":"urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns2":"urn:common_2020_1.platform.webservices.netsuite.com" ,
-		"xmlns:ns17":"urn:marketing_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns16":"urn:employees_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns15":"urn:website_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns14":"urn:employees_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns13":"urn:customization_2020_1.setup.webservices.netsuite.com" ,	
-		"xmlns:ns12":"urn:financial_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns23":"urn:faults_2020_1.platform.webservices.netsuite.com" ,
-		"xmlns:ns11":"urn:customers_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns22":"urn:general_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns10":"urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns21":"urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns20":"urn:bank_2020_1.transactions.webservices.netsuite.com") : {
-             ns24#record @("xsi:type":"ns13:CustomRecord","externalId" : vars.vendorBillSchLinePayload.id , "xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance"):{
-                             
-                
-     //          customFieldList: {
-		//				customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
-			//				value: p('invoice.creditBody')
-				//		}
-					//},
-					
-				ns13#name: vars.vendorBillSchLinePayload.name  ,
-                ns13#recType @("internalId":vars.vendorBillSchLinePayload.nsProjectInternalId ) : "" ,				
-			
-                ns13#customFieldList:{
-                	
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.vendorBillSchLinePayload.nsVendorBillingScheduleInternalId ) : ""},
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.vendorBillSchLinePayload.nsProjectInternalId ) : ""},
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.vendorBillSchLinePayload.nsProjectMilestoneInternalId ) : ""},
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.vendorBillSchLinePayload.vendorBSchTriggerInternalId ) : ""},
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : vars.vendorBillSchLinePayload.amount},
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : "true" },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"Synced_to_SFDC"):{ value : "false"}
-                        
-                        
-}
-
-}
-}
-}
-}
+		"xmlns:ns19": "urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns18": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns2": "urn:common_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns17": "urn:marketing_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns16": "urn:employees_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns15": "urn:website_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns14": "urn:employees_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns13": "urn:customization_2020_1.setup.webservices.netsuite.com" ,	
+		"xmlns:ns12": "urn:financial_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns23": "urn:faults_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns11": "urn:customers_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns22": "urn:general_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns21": "urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns20": "urn:bank_2020_1.transactions.webservices.netsuite.com"): {
+				ns24#record @("xsi:type": "ns13:CustomRecord","externalId": vars.vendorBillSchLinePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+					// customFieldList: {
+					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
+					// value: p('invoice.creditBody')
+					// }
+					// },
+					ns13#name: vars.vendorBillSchLinePayload.name,
+					ns13#recType @("internalId": vars.vendorBillSchLinePayload.nsProjectInternalId): "",
+					ns13#customFieldList: {
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_bsch"): {
+							value @("internalId": vars.vendorBillSchLinePayload.nsVendorBillingScheduleInternalId): ""
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custrecord_vd_bs_line_project"): {
+							value @("internalId": vars.vendorBillSchLinePayload.nsProjectInternalId): ""
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_milestone"): {
+							value @("internalId": vars.vendorBillSchLinePayload.nsProjectMilestoneInternalId): ""
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_bs_trigger"): {
+							value @("internalId": vars.vendorBillSchLinePayload.vendorBSchTriggerInternalId): ""
+						},
+						customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custrecord_vd_bs_amount"): {
+							value: vars.vendorBillSchLinePayload.amount
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custrecord_exported_from_sfdc_vbs_line"): {
+							value: "true"
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custrecord_synced_to_sfdc_vbs_line"): {
+							value: "false"
+						}
+					}
+				}
+			}
+		}
+	}
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -341,13 +338,9 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 			
                 ns13#customFieldList:{
                 	
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value @("internalId" : vars.vendorBillPayload.nsProjectInternalId ) : ""},
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exported_from_sfdc_vbs"):{ value  : "false"},
                         
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : "true" },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"Synced_to_SFDC"):{ value : "false"}
-                        
-                        
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_synced_to_sfdc_vbs"):{ value : "true" }
 }
 
 }

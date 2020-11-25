@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/
 	
 		
 	<sub-flow
-		name="salesorder-Implementation"
+		name="salesorder-insert-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
 		<set-variable value="#[payload.salesorder]" doc:name="salesOrderPayload"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
@@ -666,6 +666,441 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 			</otherwise>
 		</choice>
 	
+	</sub-flow>
+	<sub-flow name="salesorder_update_impl" doc:id="eadc5b59-d711-4a8e-8e29-95ea66b0eb5e" >
+		<set-variable value="#[payload.salesorder]" doc:name="salesOrderUpdatePayload" doc:id="31143223-882a-41b6-8403-ec051a318886" variableName="salesOrderUpdatePayload" mimeType="application/json" />
+		<flow-ref doc:name="oauth-header-generator-soapHeader" doc:id="ad02da92-3764-42b9-88cf-72d2352ae1ca" name="oauth-header-generator-soapHeader" />
+		<logger level="INFO" doc:name="Logger" doc:id="5a93ea75-f89f-4eec-bab4-88dd214728bc" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
+		<choice doc:name="Choice" doc:id="b8744b40-9d57-49a8-8d34-fd22c23990e1" >
+			<when expression="#[vars.salesOrderUpdatePayload.primarySales == 'true']">
+				<ee:transform doc:name="sOPrimaryrequestPayload" doc:id="4345171d-9091-40b6-918d-d4a08fd201ae">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope/
+ns soapEnc http://schemas.xmlsoap.org/soap/encoding/
+ns ns01 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns6 urn:relationships_2020_1.lists.webservices.netsuite.com
+ns ns8 urn:core_2020_1.platform.webservices.netsuite.com
+ns ns1 urn:messages.platform.webservices.netsuite.com
+ns ns24 urn:messages_2020_1.platform.webservices.netsuite.com
+ns urn urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns3 urn:messages.platform.webservices.netsuite.com
+ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
+---
+//payload.ns0#Envelope.ns0#Body.add.record.itemList
+{
+	soap#Envelope @("xmlns:S": "http://schemas.xmlsoap.org/soap/envelope/",
+    "xmlns:messages": "urn:messages_2020_1.platform.webservices.netsuite.com",
+     "xmlns:accountingLists": "urn:accounting_2020_1.lists.webservices.netsuite.com",
+     "xmlns:employeesLists": "urn:employees_2020_1.lists.webservices.netsuite.com", 
+     "xmlns:employeesTransactionsTypes": "urn:types.employees_2020_1.transactions.webservices.netsuite.com" ,
+      "xmlns:demandplanningTransactions": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com",
+       "xmlns:common": "urn:common_2020_1.platform.webservices.netsuite.com", 
+       "xmlns:commonTypes": "urn:types.common_2020_1.platform.webservices.netsuite.com" , 
+       "xmlns:accountingListsTypes": "urn:types.accounting_2020_1.lists.webservices.netsuite.com", 
+       "xmlns:customizationSetup": "urn:customization_2020_1.setup.webservices.netsuite.com",
+        "xmlns:inventoryTransactionsTypes": "urn:types.inventory_2020_1.transactions.webservices.netsuite.com",
+        "xmlns:supportLists": "urn:support_2020_1.lists.webservices.netsuite.com",
+        "xmlns:filecabinetDocuments": "urn:filecabinet_2020_1.documents.webservices.netsuite.com",
+  "xmlns:bankTransactionsTypes": "urn:types.bank_2020_1.transactions.webservices.netsuite.com", 
+  "xmlns:communicationGeneralTypes": "urn:types.communication_2020_1.general.webservices.netsuite.com", 
+  "xmlns:customizationSetupTypes": "urn:types.customization_2020_1.setup.webservices.netsuite.com" , 
+  "xmlns:supplychainListsTypes": "urn:types.supplychain_2020_1.lists.webservices.netsuite.com" ,
+  "xmlns:core": "urn:core_2020_1.platform.webservices.netsuite.com",
+  "xmlns:coreTypes": "urn:types.core_2020_1.platform.webservices.netsuite.com", 
+ "xmlns:soapenc": "http://schemas.xmlsoap.org/soap/encoding/",
+ "xmlns:supplychainLists": "urn:supplychain_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:demandplanningTransactionsTypes": "urn:types.demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+ "xmlns:websiteLists": "urn:website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:salesTransactions": "urn:sales_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:salesTransactionsTypes": "urn:types.sales_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:relationshipsLists": "urn:relationships_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:inventoryTransactions": "urn:inventory_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:employeesListsTypes": "urn:types.employees_2020_1.lists.webservices.netsuite.com",
+ "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", 
+ "xmlns:customersTransactions": "urn:customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivitiesTypes": "urn:types.scheduling_2020_1.activities.webservices.netsuite.com", 
+ "xmlns:financialTransactions": "urn:financial_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:xsd": "http://www.w3.org/2001/XMLSchema", 
+ "xmlns:relationshipsListsTypes": "urn:types.relationships_2020_1.lists.webservices.netsuite.com",
+ "xmlns:employeesTransactions": "urn:employees_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:faults": "urn:faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:marketingListsTypes": "urn:types.marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:communicationGeneral": "urn:communication_2020_1.general.webservices.netsuite.com",
+ "xmlns:faultsTypes": "urn:types.faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:supportListsTypes": "urn:types.support_2020_1.lists.webservices.netsuite.com",
+ "xmlns:websiteListsTypes": "urn:types.website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:purchasesTransactions": "urn:purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:financialTransactionsTypes": "urn:types.financial_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivities": "urn:scheduling_2020_1.activities.webservices.netsuite.com",
+ "xmlns:bankTransactions": "urn:bank_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:marketingLists": "urn:marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:customersTransactionsTypes": "urn:types.customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:purchasesTransactionsTypes": "urn:types.purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:generalTransactions": "urn:general_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:filecabinetDocumentsTypes": "urn:types.filecabinet_2020_1.documents.webservices.netsuite.com"): {
+		soap#Header: {
+			urn#tokenPassport: {
+				ns8#account: p('kimbleSoapNetsuite.realm'),
+				ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
+				ns8#token: p('secure::kimbleSoapNetsuite.token'),
+				ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
+				ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
+				ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2]
+			},
+			ns1#preferences: {
+				ns2#ignoreReadOnlyFields: true
+			},
+			ns3#searchPreferences: {
+				ns4#bodyFieldsOnly: true,
+				ns5#pageSize: 50
+			}
+		},
+		soap#Body: {
+			ns24#updateList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
+		"xmlns:ns6": "urn:relationships_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns3": "urn:common_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns4": "urn:communication_2020_1.general.webservices.netsuite.com" ,
+		"xmlns:ns9": "urn:sales_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns7": "urn:support_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns8": "urn:accounting_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns": "urn:core_2020_1.platform.webservices.netsuite.com",
+		"xmlns:ns19": "urn:employees_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns18": "urn:website_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns2": "urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
+		"xmlns:ns17": "urn:employees_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns16": "urn:customization_2020_1.setup.webservices.netsuite.com" ,
+		"xmlns:ns15": "urn:general_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns14": "urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns13": "urn:bank_2020_1.transactions.webservices.netsuite.com" ,	
+		"xmlns:ns12": "urn:financial_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns23": "urn:faults_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns11": "urn:customers_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns22": "urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
+				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderUpdatePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+					
+						ns9#customFieldList: 
+						{
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "employee"): {
+								value  @("internalId": vars.salesOrderUpdatePayload.primarySalesPersonInternalId ) : ""
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "salesrole"): {
+								value @("internalId": vars.salesOrderUpdatePayload.salesRoleInternalId): ""
+							},
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "isprimary"): {
+								value: vars.salesOrderUpdatePayload.isPrimary
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "contribution"): {
+								value : vars.salesOrderUpdatePayload.contribution
+							}
+						}
+					
+				}
+			}
+		}
+	}
+	
+}
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="sOrequestPayload" doc:id="d9694ce7-20f9-4843-a5f5-838a6009ca8d" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope/
+ns soapEnc http://schemas.xmlsoap.org/soap/encoding/
+ns ns01 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns6 urn:relationships_2020_1.lists.webservices.netsuite.com
+ns ns8 urn:core_2020_1.platform.webservices.netsuite.com
+ns ns1 urn:messages.platform.webservices.netsuite.com
+ns ns24 urn:messages_2020_1.platform.webservices.netsuite.com
+ns urn urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns3 urn:messages.platform.webservices.netsuite.com
+ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
+---
+//payload.ns0#Envelope.ns0#Body.add.record.itemList
+{
+	soap#Envelope @("xmlns:S": "http://schemas.xmlsoap.org/soap/envelope/",
+    "xmlns:messages": "urn:messages_2020_1.platform.webservices.netsuite.com",
+     "xmlns:accountingLists": "urn:accounting_2020_1.lists.webservices.netsuite.com",
+     "xmlns:employeesLists": "urn:employees_2020_1.lists.webservices.netsuite.com", 
+     "xmlns:employeesTransactionsTypes": "urn:types.employees_2020_1.transactions.webservices.netsuite.com" ,
+      "xmlns:demandplanningTransactions": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com",
+       "xmlns:common": "urn:common_2020_1.platform.webservices.netsuite.com", 
+       "xmlns:commonTypes": "urn:types.common_2020_1.platform.webservices.netsuite.com" , 
+       "xmlns:accountingListsTypes": "urn:types.accounting_2020_1.lists.webservices.netsuite.com", 
+       "xmlns:customizationSetup": "urn:customization_2020_1.setup.webservices.netsuite.com",
+        "xmlns:inventoryTransactionsTypes": "urn:types.inventory_2020_1.transactions.webservices.netsuite.com",
+        "xmlns:supportLists": "urn:support_2020_1.lists.webservices.netsuite.com",
+        "xmlns:filecabinetDocuments": "urn:filecabinet_2020_1.documents.webservices.netsuite.com",
+  "xmlns:bankTransactionsTypes": "urn:types.bank_2020_1.transactions.webservices.netsuite.com", 
+  "xmlns:communicationGeneralTypes": "urn:types.communication_2020_1.general.webservices.netsuite.com", 
+  "xmlns:customizationSetupTypes": "urn:types.customization_2020_1.setup.webservices.netsuite.com" , 
+  "xmlns:supplychainListsTypes": "urn:types.supplychain_2020_1.lists.webservices.netsuite.com" ,
+  "xmlns:core": "urn:core_2020_1.platform.webservices.netsuite.com",
+  "xmlns:coreTypes": "urn:types.core_2020_1.platform.webservices.netsuite.com", 
+ "xmlns:soapenc": "http://schemas.xmlsoap.org/soap/encoding/",
+ "xmlns:supplychainLists": "urn:supplychain_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:demandplanningTransactionsTypes": "urn:types.demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+ "xmlns:websiteLists": "urn:website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:salesTransactions": "urn:sales_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:salesTransactionsTypes": "urn:types.sales_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:relationshipsLists": "urn:relationships_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:inventoryTransactions": "urn:inventory_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:employeesListsTypes": "urn:types.employees_2020_1.lists.webservices.netsuite.com",
+ "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", 
+ "xmlns:customersTransactions": "urn:customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivitiesTypes": "urn:types.scheduling_2020_1.activities.webservices.netsuite.com", 
+ "xmlns:financialTransactions": "urn:financial_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:xsd": "http://www.w3.org/2001/XMLSchema", 
+ "xmlns:relationshipsListsTypes": "urn:types.relationships_2020_1.lists.webservices.netsuite.com",
+ "xmlns:employeesTransactions": "urn:employees_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:faults": "urn:faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:marketingListsTypes": "urn:types.marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:communicationGeneral": "urn:communication_2020_1.general.webservices.netsuite.com",
+ "xmlns:faultsTypes": "urn:types.faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:supportListsTypes": "urn:types.support_2020_1.lists.webservices.netsuite.com",
+ "xmlns:websiteListsTypes": "urn:types.website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:purchasesTransactions": "urn:purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:financialTransactionsTypes": "urn:types.financial_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivities": "urn:scheduling_2020_1.activities.webservices.netsuite.com",
+ "xmlns:bankTransactions": "urn:bank_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:marketingLists": "urn:marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:customersTransactionsTypes": "urn:types.customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:purchasesTransactionsTypes": "urn:types.purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:generalTransactions": "urn:general_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:filecabinetDocumentsTypes": "urn:types.filecabinet_2020_1.documents.webservices.netsuite.com"): {
+		soap#Header: {
+			urn#tokenPassport: {
+				ns8#account: p('kimbleSoapNetsuite.realm'),
+				ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
+				ns8#token: p('secure::kimbleSoapNetsuite.token'),
+				ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
+				ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
+				ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2]
+			},
+			ns1#preferences: {
+				ns2#ignoreReadOnlyFields: true
+			},
+			ns3#searchPreferences: {
+				ns4#bodyFieldsOnly: true,
+				ns5#pageSize: 50
+			}
+		},
+		soap#Body: {
+			ns24#upsertList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
+		"xmlns:ns6": "urn:relationships_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns3": "urn:common_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns4": "urn:communication_2020_1.general.webservices.netsuite.com" ,
+		"xmlns:ns9": "urn:sales_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns7": "urn:support_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns8": "urn:accounting_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns": "urn:core_2020_1.platform.webservices.netsuite.com",
+		"xmlns:ns19": "urn:employees_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns18": "urn:website_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns2": "urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
+		"xmlns:ns17": "urn:employees_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns16": "urn:customization_2020_1.setup.webservices.netsuite.com" ,
+		"xmlns:ns15": "urn:general_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns14": "urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns13": "urn:bank_2020_1.transactions.webservices.netsuite.com" ,	
+		"xmlns:ns12": "urn:financial_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns23": "urn:faults_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns11": "urn:customers_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns22": "urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
+				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderUpdatePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+					// customFieldList: {
+					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
+					// value: p('invoice.creditBody')
+					// }
+					// },
+					ns9#itemList: {
+						quantity: vars.salesOrderUpdatePayload.quantity,
+						description: vars.salesOrderUpdatePayload.description,
+						rate: vars.salesOrderUpdatePayload.rate,
+						revRecSchedule  @("internalId": vars.salesOrderUpdatePayload.revRecScheduleInternalId): "",
+						revRecStartDate: vars.salesOrderUpdatePayload.revRecStartDate,
+						revRecEndDate: vars.salesOrderUpdatePayload.revRecStartDate,
+						line: vars.salesOrderUpdatePayload.line,
+						amount: vars.salesOrderUpdatePayload.amount,
+						vsoePrice: vars.salesOrderUpdatePayload.vsoePrice,
+						vsoeAllocation: vars.salesOrderUpdatePayload.vsoeAllocationAmount,
+						vsoeDelivered: vars.salesOrderUpdatePayload.vsoeDelivered,
+						ns9#customFieldList: {
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
+								value: vars.salesOrderUpdatePayload.softwareDelivered
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
+								value: vars.salesOrderUpdatePayload.nonGA
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
+								value: vars.salesOrderUpdatePayload.vsoeAllocationAmount
+							},
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
+								value : vars.salesOrderUpdatePayload.vsoeDelivered
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
+								value: vars.salesOrderUpdatePayload.revRecStartDate
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
+								value: vars.salesOrderUpdatePayload.revRecEndDate
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_fair_value"): {
+								value: vars.salesOrderUpdatePayload.vsoeAllocationAmount
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
+								value @("internalId": vars.salesOrderUpdatePayload.revRecScheduleInternalId): ""
+							}
+						},
+						ns9#customFieldList: {
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_exportedfromsfdc"): {
+								value: "true"
+							},
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_syncedtosfdc"): {
+								value: "false"
+							},
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_to_update_lines"): {
+								value: "true"
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<ee:transform doc:name="payloadXML" doc:id="0d314bc5-bc94-4225-8335-38d11eb75216" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="soapHeader" ><![CDATA[%dw 2.0
+output application/xml
+ns soap http://schemas.xmlsoap.org/soap/envelope/
+---
+{
+headers: payload.Envelope.Header
+
+
+}]]></ee:set-variable>
+				<ee:set-variable variableName="targetPayload" ><![CDATA[%dw 2.0
+output application/xml
+---
+payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger - Full payload " doc:id="18b6a88e-c368-4137-8f10-230e0be45bb5" message="#[payload]" />
+		<try doc:name="Try" doc:id="933ea874-bad1-4126-8cb7-cc3f07c72f12" >
+			<wsc:consume operation="${soap.wsdlAddOperation}" doc:name="Invoke-SalesOrder" doc:id="4d643347-0bb3-4e62-82df-040dc50c5429" config-ref="Web_Service_Consumer_Config" target="responsePayload" >
+				<wsc:message >
+					<wsc:body ><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
+					<wsc:headers ><![CDATA[#[vars.soapHeader]]]></wsc:headers>
+				</wsc:message>
+			</wsc:consume>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7eda4ae3-91e9-4b68-9490-167c5f7f5fb1" type="ANY" >
+					<logger level="INFO" doc:name="Logger" doc:id="429f89e6-667e-44f3-a450-9828402bdc05" message="#[error.description]" />
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger" doc:id="363b8ed5-b77c-49b5-a81f-1e9b2dc31618" message="#[vars.responsePayload]" />
+		<ee:transform doc:name="netsuiteInternalId" doc:id="b0defd3f-f422-490d-8563-175cc6c16466" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+---
+{
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	syncedToNS: true
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables />
+		</ee:transform>
+		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="fe57cd49-9464-4066-86a4-f7a0f2d04e24" message="#[payload]" />
+		<logger level="INFO" doc:name="Logger for error code" doc:id="d440a83e-1fd8-4c45-96fa-a00cb9876a22" message="#[%dw 2.0
+output application/json
+---
+{
+       (code: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code) if (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code != null)
+       
+}]" />
+		<logger level="INFO" doc:name="Logger" doc:id="91e58cd2-8c7d-4de5-8396-f63f83266b49" message='#[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]' />
+		<ee:transform doc:name="netsuiteInternalId" doc:id="4add9ee8-6e9a-4284-949c-7d45880b8c34" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="isSuccess" ><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	
+	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
+}]]></ee:set-variable>
+				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<choice doc:name="Choice" doc:id="1a6f7982-3099-4701-aeec-5ccf33444bb1" >
+			<when expression="#[vars.isSuccess.message == 'true']" >
+				<flow-ref doc:name="job_rest_call_" doc:id="464ea691-ee17-4513-bafe-8c2d69bdd540" name="job_rest_call_" />
+				<ee:transform doc:name="Transform Message" doc:id="705d4b4c-d089-4165-8f3a-e6915ad6e136" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+---
+{
+	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	syncedToNS: true,
+	nsCustomProjectNo : vars.restRsp.entityId
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="e0c57783-06c5-4d3f-a4bb-d3be2e9be62d" message="#[payload]" />
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="4ea16dc5-a0af-4fc2-a635-b518b3a5b8fc" message="#[payload]" />
+			</otherwise>
+		</choice>
 	</sub-flow>
 	
 	

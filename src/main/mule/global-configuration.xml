@@ -25,12 +25,8 @@ http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
 http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
-
-	<http:listener-config
-		name="fin-Netsuite-migration-sapi-httpListenerConfig">
-		<http:listener-connection host="${http.host}"
-			port="${http.port}" />
-	</http:listener-config>
+<import doc:name="Import" doc:id="b4e62ace-fd94-4920-b442-6aee34968f03" file="common-logging-framework.xml" />
+	
 
 	<apikit:config name="fin-Netsuite-migration-sapi-config"
 		api="api\fin-Netsuite-migration-sapi.raml"
@@ -50,6 +46,9 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 
 
 	</wsc:config>
+	<anypoint-mq:config name="Anypoint_MQ_Config" doc:name="Anypoint MQ Config" doc:id="0450c4bc-f3a7-4b9c-9bf4-3bfdb21d97ce" >
+		<anypoint-mq:connection url="${secure::mq.url}" clientId="${secure::mq.clientId}" clientSecret="${secure::mq.clientSecret}" />
+	</anypoint-mq:config>
 
 	<configuration-properties
 		doc:name="Configuration properties"
@@ -67,7 +66,8 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	
 	<sub-flow name="job_rest_call_" doc:id="2bf1b774-7894-4464-b952-5826fbc0dcf3" >
               
-              <ee:transform doc:name="restUrl" doc:id="fe59f8b6-df84-4f01-a00f-5e0da2ec12d4">
+              <logger level="INFO" doc:name="Logger" doc:id="38d88b83-e61f-42fb-9ccf-41f759bb8e0b" message="#[payload.netsuiteInternalId]"/>
+		<ee:transform doc:name="restUrl" doc:id="fe59f8b6-df84-4f01-a00f-5e0da2ec12d4">
                                            <ee:message>
                                            </ee:message>
                                            <ee:variables>
@@ -89,7 +89,7 @@ method : p('http.methodGet')
                              </ee:transform>
                              <flow-ref doc:name="oauth-header-generator" doc:id="f99b9041-3b4d-41c6-8aa0-724a2ff69876" name="oauth-header-generator-restKimble" />
                              <logger level="INFO" doc:name="Logger" doc:id="9c48c6db-0b8c-4604-8174-20f7879d488b" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@ Get call OAUTH @@@@@@@@@"/>
-                             <until-successful maxRetries="3" doc:name="Until Successful" doc:id="51bb4229-dab0-4834-b7e4-272e2dc6d3bd" >
+                             <until-successful doc:name="Until Successful" doc:id="51bb4229-dab0-4834-b7e4-272e2dc6d3bd" maxRetries="3">
 			<http:request method="GET" doc:name="GetAccount" doc:id="4d985fa7-b53f-4c44-bf63-5e6adc00de35" config-ref="HTTP_Request_configuration" target="restRsp" url="#[vars.restUrl.url]" responseTimeout="${httpRequest.responseTimeout}">
                                            <http:headers><![CDATA[#[%dw 2.0
 output application/java
@@ -108,6 +108,45 @@ output application/java
               
               
               </sub-flow>
+	<sub-flow name="salesOrder_rest_call_" doc:id="18f18514-8d4b-4767-b485-b8499f089103" >
+		<ee:transform doc:name="restUrl" doc:id="25516372-0c99-4016-9fed-b110dede21ff" >
+			<ee:message />
+			<ee:variables >
+				<ee:set-variable variableName="restUrl" ><![CDATA[%dw 2.0
+output application/json
+
+var id = payload.netsuiteInternalId
+
+var host = p('kimbleRestNetsuite.urlHost') 
+var path = p('kimbleRestNetsuite.urlPathAssignment')
+
+---
+{
+url : "https://" ++ host ++ path ++ id,
+method : p('http.methodGet')
+  
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<flow-ref doc:name="oauth-header-generator" doc:id="c36d23a7-b34a-42ae-a2ee-f879697428ce" name="oauth-header-generator-restKimble" />
+		<logger level="INFO" doc:name="Logger" doc:id="d87cc0ba-35a4-41ce-8abc-11d5f6d43fc0" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@ Get call OAUTH @@@@@@@@@" />
+		<until-successful maxRetries="3" doc:name="Until Successful" doc:id="f4fe9a83-7366-4a45-a7eb-06cb7279fde2"  >
+			<http:request method="GET" doc:name="GetAccount" doc:id="4d985fa7-b53f-4c44-bf63-5e6adc00de35" config-ref="HTTP_Request_configuration" target="restRsp" url="#[vars.restUrl.url]" responseTimeout="${httpRequest.responseTimeout}">
+                                           <http:headers><![CDATA[#[%dw 2.0
+output application/java
+---
+
+
+
+
+{"Authorization": vars.oAuthHeaderFinal,
+  "Content-Type":"application/json"
+    
+}]]]></http:headers>
+                             </http:request>
+		</until-successful>
+		<logger level="INFO" doc:name="Logger" doc:id="47384371-817c-4798-bdc6-45f1c8504ad9" />
+	</sub-flow>
 	
 
 	<!-- <error-handler name="global-configurationsError_Handler" doc:id="40a1db0d-6343-4029-b1aa-1b583379fce8" 

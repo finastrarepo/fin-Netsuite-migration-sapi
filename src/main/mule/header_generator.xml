@@ -25,7 +25,7 @@ http://www.mulesoft.org/schema/mule/java http://www.mulesoft.org/schema/mule/jav
 	</sub-flow>
 	<sub-flow name="oauth-header-generator-restKimble" doc:id="60a51065-8489-404d-b628-e0c48c64f58e" >
 		<java:new doc:name="New" doc:id="fb97fa08-ca0e-40f3-804d-0fdf4d548c56" class="com.mule.oauth.OAuthTokenBuilder" constructor="OAuthTokenBuilder(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)" target="inst">
-			<java:args><![CDATA[#[{ arg0: p('secure::kimbleRestNetsuite.consumerKey'), arg1:p('secure::kimbleRestNetsuite.consumerSecret'), arg2:p('secure::kimbleRestNetsuite.token'), arg3:p('secure::kimbleRestNetsuite.tokenSecret'), arg4:p('secure::kimbleRestNetsuite.realm') }]]]></java:args>
+			<java:args><![CDATA[#[{ arg0: p('secure::kimbleRestNetsuite.consumerKey'), arg1: p('secure::kimbleRestNetsuite.consumerSecret'), arg2: p('secure::kimbleRestNetsuite.token'), arg3: p('secure::kimbleRestNetsuite.tokenSecret'), arg4: p('secure::kimbleRestNetsuite.realm') }]]]></java:args>
 		</java:new>
 		<ee:transform doc:name="Transform Message" doc:id="2242a484-fa7f-4705-a872-ee652ac48499">
 			<ee:message>

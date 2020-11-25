@@ -18,7 +18,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<sub-flow name="netsuite-integration-projectSetup-flowSub_Flow" doc:id="91c4ee31-1017-48f0-954f-bca7e63dc1e0" >
 		<logger level="INFO" doc:name="Logger" doc:id="84b24689-f8ec-429b-8cb2-bbfa2c8db6a9" message='#[{requestFor:"ProjectSetUp"} ++ payload]'/>
 		<choice doc:name="Choice" doc:id="90b9eeb5-13d0-404d-90e6-4b6c4bf9f1ab" >
-			<when expression="#[(!(isEmpty(payload.job)))]">
+			<when expression="#[(!(isEmpty(payload.nsProject)))]">
 				<flow-ref doc:name="Job-Implementation" doc:id="5f5b0d32-754c-4175-accb-580c4c8b9e3e" name="Job-Implementation"/>
 			</when>
 			<otherwise >

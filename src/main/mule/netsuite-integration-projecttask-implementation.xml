@@ -107,11 +107,11 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 				
                 ns3#customFieldList:{
                 	
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Exported_from_SFDC"):{ value : "true"},
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Synced_To_SFDC"):{ value : "false"},
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custevent_exportedfromsfdc"):{ value : "true"},
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custevent_syncedtosfdc"):{ value : "false"},
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Drop_Dead_Date"):{ value : vars.taskPayload.dropDeadDate ++ "T00:00:00.000Z" },
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Estimated_End_Date"):{ value : vars.taskPayload.finishNoLaterThanDate ++ "T00:00:00.000Z" }
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_dropdeaddate"):{ value : vars.taskPayload.dropDeadDate ++ "T00:00:00.000Z" },
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_estimatedenddate"):{ value : vars.taskPayload.finishNoLaterThanDate ++ "T00:00:00.000Z" }
                                     
 }
 
