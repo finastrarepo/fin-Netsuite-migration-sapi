@@ -597,7 +597,6 @@ payload]]></ee:set-variable>
 		<logger level="INFO" doc:name="Logger" doc:id="138aa568-2243-4590-9cbc-320f77f410a5" message="#[vars.responsePayload]" />
 		<choice doc:name="Choice" doc:id="522637f6-2fe4-4fb3-8172-52576b882362" >
 			<when expression="#[vars.isSuccess.message == 'true']" >
-				<flow-ref doc:name="job_rest_call_" doc:id="8b4a240b-ddc4-4f1a-8a10-fd49db4c213d" name="job_rest_call_" />
 				<ee:transform doc:name="Transform Message" doc:id="e4589352-f397-4963-8654-87a6e5399627" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -605,10 +604,9 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
-	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
+	//externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	InternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	syncedToNS: true
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
