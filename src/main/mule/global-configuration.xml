@@ -118,7 +118,7 @@ output application/json
 var id = payload.netsuiteInternalId
 
 var host = p('kimbleRestNetsuite.urlHost') 
-var path = p('kimbleRestNetsuite.urlPathAssignment')
+var path = p('kimbleRestNetsuite.urlPathSalesOrder')
 
 ---
 {
