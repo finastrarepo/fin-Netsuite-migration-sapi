@@ -581,7 +581,7 @@ payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger - Full payload " doc:id="74514a49-cc61-48e5-b476-8d43fbbb8286" message="#[payload]" />
-		<try doc:name="Copy_of_Try" doc:id="ada7484b-e028-4825-95cc-95e90ebd416d" >
+		<try doc:name="Try" doc:id="ada7484b-e028-4825-95cc-95e90ebd416d" >
 			<wsc:consume operation="${soap.wsdlUpdateOperation}" doc:name="Invoke-Job" doc:id="9cabfb85-e84d-4d50-ab05-54211460ad09" config-ref="Web_Service_Consumer_Config" target="responsePayload" >
 				<wsc:message >
 					<wsc:body ><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
@@ -589,16 +589,16 @@ payload]]></ee:set-variable>
 				</wsc:message>
 			</wsc:consume>
 			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="Copy_of_On Error Propagate" doc:id="478919e1-1c7a-4513-a7c2-c380713f477e" type="ANY" >
-					<logger level="INFO" doc:name="Copy_of_Logger" doc:id="c4e91428-b2a8-4bc5-9c3f-b3d44b6ecccd" message="#[error.description]" />
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="478919e1-1c7a-4513-a7c2-c380713f477e" type="ANY" >
+					<logger level="INFO" doc:name="Logger" doc:id="c4e91428-b2a8-4bc5-9c3f-b3d44b6ecccd" message="#[error.description]" />
 				</on-error-propagate>
 			</error-handler>
 		</try>
 		<logger level="INFO" doc:name="Logger" doc:id="138aa568-2243-4590-9cbc-320f77f410a5" message="#[vars.responsePayload]" />
-		<choice doc:name="Copy_of_Choice" doc:id="522637f6-2fe4-4fb3-8172-52576b882362" >
+		<choice doc:name="Choice" doc:id="522637f6-2fe4-4fb3-8172-52576b882362" >
 			<when expression="#[vars.isSuccess.message == 'true']" >
-				<flow-ref doc:name="Copy_of_job_rest_call_" doc:id="8b4a240b-ddc4-4f1a-8a10-fd49db4c213d" name="job_rest_call_" />
-				<ee:transform doc:name="Copy_of_Transform Message" doc:id="e4589352-f397-4963-8654-87a6e5399627" >
+				<flow-ref doc:name="job_rest_call_" doc:id="8b4a240b-ddc4-4f1a-8a10-fd49db4c213d" name="job_rest_call_" />
+				<ee:transform doc:name="Transform Message" doc:id="e4589352-f397-4963-8654-87a6e5399627" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -612,11 +612,11 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Copy_of_Logger" doc:id="dd0f8656-54e5-42ab-9e35-9e2cdcc9ef66" message="#[payload]" />
+				<logger level="INFO" doc:name="Logger" doc:id="dd0f8656-54e5-42ab-9e35-9e2cdcc9ef66" message="#[payload]" />
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Copy_of_Logger" doc:id="a637a19d-1f63-46d6-abb1-dbb7ff5e3514" message="#[payload]" />
-				<ee:transform doc:name="Copy_of_Transform Message" doc:id="6dbf00b5-5190-4a0a-b9a9-1861c705ed4f" >
+				<logger level="INFO" doc:name="Logger" doc:id="a637a19d-1f63-46d6-abb1-dbb7ff5e3514" message="#[payload]" />
+				<ee:transform doc:name="Transform Message" doc:id="6dbf00b5-5190-4a0a-b9a9-1861c705ed4f" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
@@ -630,10 +630,10 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Copy_of_Logger" doc:id="b94de080-1257-4f43-8241-ee13b6bffce2" />
+				<logger level="INFO" doc:name="Logger" doc:id="b94de080-1257-4f43-8241-ee13b6bffce2" />
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="Copy_of_log-after-outbound-request" doc:id="7ae24bc1-e877-4437-9256-37068ada33ab" name="log-after-outbound-request" />
+		<flow-ref doc:name="log-after-outbound-request" doc:id="7ae24bc1-e877-4437-9256-37068ada33ab" name="log-after-outbound-request" />
 	</sub-flow>
 	
 	
