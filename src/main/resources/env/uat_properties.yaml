@@ -8,8 +8,8 @@ http:
 mq:
   subscribe-name: "project-setup-req-queue"
   publish-name: "project-setup-rsp-queue"
-  clientId: "![+dhOR2PMNcLx9wCg6WtMxaCFeTyTUNUGAvf6K1IdmW+D5Oa4VsyqYiZOHcvFWuA+]"
-  clientSecret: "![MBmhrSe+69vShJ/5nh5eylREg56w5jF4ZXr0lsITx0nHChKVwZj5KQD+PgOV0Lw9]"
+  clientId: "bbbb9579eae2442693c655f9625ac42d"
+  clientSecret: "1fE2E5d8D4Be4A86a0Fb9538b42F367A"
   url: "https://mq-eu-west-2.anypoint.mulesoft.com/api/v1"
   status-qname: "project-setup-status-queue"
 

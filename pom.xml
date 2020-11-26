@@ -97,12 +97,6 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.mule.connectors</groupId>
-			<artifactId>mule-http-connector</artifactId>
-			<version>1.5.11</version>
-			<classifier>mule-plugin</classifier>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -147,7 +141,31 @@
 			<version>1.2.3</version>
 			<classifier>mule-plugin</classifier>
 		</dependency>
-	</dependencies>
+		<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-http-connector</artifactId>
+            <version>1.5.11</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>org.mule.connectors</groupId>
+            <artifactId>mule-jms-connector</artifactId>
+            <version>1.6.3</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+    	<dependency>
+            <groupId>com.mulesoft.connectors</groupId>
+            <artifactId>anypoint-mq-connector</artifactId>
+            <version>3.1.1</version>
+            <classifier>mule-plugin</classifier>
+        </dependency>
+        <dependency>
+            <groupId>b969ea8e-6463-4f9b-9027-5cfaae2d33c2</groupId>
+            <artifactId>common-logging-framework</artifactId>
+            <version>1.0.9</version>
+            <classifier>custom</classifier>
+        </dependency>
+    </dependencies>
 
 	<repositories>
 		<repository>

@@ -1,18 +1,20 @@
-##Http Configuration
+#NS REST call details
 http:
-  host: "0.0.0.0"
-  port: "8081"
-
-#method for generating token
-  methodPost: "POST"
   methodGet: "GET"
-  methodPut: "PUT"
-  methodDelete: "DELETE"
-  methodPatch: "PATCH"
+
+##Anypoint-MQ Configuration
+mq:
+  subscribe-name: "project-setup-req-queue"
+  publish-name: "project-setup-rsp-queue"
+  clientId: "1e073927bf4b49b79e1a66e23c4bff84"
+  clientSecret: "8ab62F760E2e4C1d8F4A4Bf59a765ab8"
+  url: "https://mq-eu-west-2.anypoint.mulesoft.com/api/v1"
+  status-qname: "project-setup-status-queue"
 
 ## http request configuration
 httpRequest:
   responseTimeout: "30000"
+  
 
 #APP Id for autodiscovery
 apiId: "16350717"
@@ -31,37 +33,24 @@ realm: "3431250_SB99"
 #####Netsuite Invoice Values for SOAP request
 soap:
   wsdlUrl: "https://webservices.netsuite.com/wsdl/v2020_1_0/netsuite.wsdl"
-  wsdlAddress: "https://3431250-sb99.suitetalk.api.netsuite.com/services/NetSuitePort_2020_1"
+  wsdlAddress: "https://3431250-sb2.suitetalk.api.netsuite.com/services/NetSuitePort_2020_1"
   wsdlService: "NetSuiteService"
   wsdlPort: "NetSuitePort"
   wsdlTimeout: "300000"
-  wsdlAddOperation: "add"
-  account: "3431250_SB99"
-  roleInternalId: "1294"
-  applicationId: "FE000020-1A96-4625-AC9D-EA8D7EA227ED"
+  wsdlAddOperation: "addList"
+  wsdlUpsertOperation: "upsertList"
+  wsdlUpdateOperation: "updateList"
+  account: "3431250_SB2"
+  roleInternalId: "1281"
+  applicationId: "AF5CDD89-BBFA-45D8-81D5-536506817952"
   algorithm: "HMAC_SHA256"
-  wsdlSearchOperation: "search"  
-
-###Invoice Hardcoded Values
-invoice:
-  creditBody: "3"
+  wsdlSearchOperation: "search" 
 
 
 ####LOGGER CONFIGURATION FOR ERROR PLUGIN
 api:
-  name: "fin-netsuite-finance-sapi"
+  name: "fin-netsuite-migration-sapi"
   version: "v1.0"  
-  
-###Request to PROCESS API
-httpRequestPaymentReceipts: "http://fin-customer-papi-1-0-dev.uk-e1.cloudhub.io/v1.0/paymentReceipts"  
-httpRequestCreditNotes: "http://fin-customer-papi-1-0-dev.uk-e1.cloudhub.io/v1.0/creditNotes"
-
-untilSuccessful:
-  retryNumber: "3"
-  retryTime: "10000"
-  
-###Cron Expression for Payment Receipt                                              
-cronExpressionPaymentReceipt: "0 0 0/1 1/1 * ? *"     
 
 ###Object Store 
 objectStore:
@@ -78,53 +67,49 @@ invoiceLog: "Kimble-Netsuite-InvoiceInterface"
 returnAuthLog: "Kimble-Netsuite-ReturnAuthorizationInterface"
 revRecLog: "Kimble-Netsuite-revenueRecognitionInterface"
 
-
-####Saved search InternalID
-paymentReceiptSearch: "8915"
-creditNotesSearch: "8970"
-
-##Cron Expression for Credit Notes
-cronExpressionCreditNotes: "0 0 0/2 1/1 * ? *"
-
-
+####Kimble Interfaces Netsuite Details For WSDL Call
+#kimbleSoapNetsuite:
+#  consumerKey: "![PXyvIBEK4l6DNNMRXFsOjl2G2FByE0uXCQt/2th+/l1ZA7wqPaujrngqeYAWHla1TAF8na3f5ByE8QgRJoPx9xaQTPMoXOD7lMPfJv0gEDM=]"
+#  consumerSecret: "![HDvgJ9SVwEotPxV/h5UfEcE8suYbvM0RoypvfDknyuTz9e8awOD2WP4RIyuwpNJ+sA1df4sKUyDpuqMap5mTF0F+TEzLaS1lWyy/zEedoj0=]"
+#  token: "![yWhBnKjt9Dx9K8tOiz0XX88ejIsefblZRJy8TfeuBUD+JHrkID7chCJW+9fsIRT8yEMXcQdzdRsKWi3WbQyo8RFop67cTtnQrgIyCqBlf6k=]"
+#  tokenSecret: "![bep9ng4cJeMMbSO80UyPIDW0Ua3rdQZWmrX+p6cU8mpRY7EidDNsjL+mRgBLbYk7kUbvGB+jgSBBXfGRC+ouTr43ZdxvS2y3aV8+zTa0Kb8=]"
+#  realm: "3431250_SB99"
+#
+#
+####Kimble Interfaces Netsuite Details For Rest Call
+#kimbleRestNetsuite:
+#  consumerKey: "![PXyvIBEK4l6DNNMRXFsOjl2G2FByE0uXCQt/2th+/l1ZA7wqPaujrngqeYAWHla1TAF8na3f5ByE8QgRJoPx9xaQTPMoXOD7lMPfJv0gEDM=]"
+#  consumerSecret: "![HDvgJ9SVwEotPxV/h5UfEcE8suYbvM0RoypvfDknyuTz9e8awOD2WP4RIyuwpNJ+sA1df4sKUyDpuqMap5mTF0F+TEzLaS1lWyy/zEedoj0=]"
+#  token: "![yWhBnKjt9Dx9K8tOiz0XX88ejIsefblZRJy8TfeuBUD+JHrkID7chCJW+9fsIRT8yEMXcQdzdRsKWi3WbQyo8RFop67cTtnQrgIyCqBlf6k=]"
+#  tokenSecret: "![bep9ng4cJeMMbSO80UyPIDW0Ua3rdQZWmrX+p6cU8mpRY7EidDNsjL+mRgBLbYk7kUbvGB+jgSBBXfGRC+ouTr43ZdxvS2y3aV8+zTa0Kb8=]"
+#  realm: "3431250_SB99"
+#  urlHost: "3431250-sb99.suitetalk.api.netsuite.com"
+#  urlPathAssignment: "/services/rest/record/v1/job/"
+#  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"
+#  urlPathDepartment: "/services/rest/record/v1/department/eid:"   
+#  
+  
+  
 ###Kimble Interfaces Netsuite Details For WSDL Call
 kimbleSoapNetsuite:
-  consumerKey: "![PXyvIBEK4l6DNNMRXFsOjl2G2FByE0uXCQt/2th+/l1ZA7wqPaujrngqeYAWHla1TAF8na3f5ByE8QgRJoPx9xaQTPMoXOD7lMPfJv0gEDM=]"
-  consumerSecret: "![HDvgJ9SVwEotPxV/h5UfEcE8suYbvM0RoypvfDknyuTz9e8awOD2WP4RIyuwpNJ+sA1df4sKUyDpuqMap5mTF0F+TEzLaS1lWyy/zEedoj0=]"
-  token: "![yWhBnKjt9Dx9K8tOiz0XX88ejIsefblZRJy8TfeuBUD+JHrkID7chCJW+9fsIRT8yEMXcQdzdRsKWi3WbQyo8RFop67cTtnQrgIyCqBlf6k=]"
-  tokenSecret: "![bep9ng4cJeMMbSO80UyPIDW0Ua3rdQZWmrX+p6cU8mpRY7EidDNsjL+mRgBLbYk7kUbvGB+jgSBBXfGRC+ouTr43ZdxvS2y3aV8+zTa0Kb8=]"
-  realm: "3431250_SB99"
-
-
+  consumerKey: "![2/yZ5Dpz19jg4Xqf8EzuZLFJEJwgJCb1zcj0Ow2TT9fvdKsq2P0lvyiHN6L8wTOKFsZQ4rXSRyga4pIwe6mrjW14LGGKE1egSqccZVcQ0Q0=]"
+  consumerSecret: "![mGQZ+k6y9jEKGEmjuzdUUhXKXAGZ7KwxlVDMYq7XuFlpTdqdtyihIhU/JxINuyF1r36AbKzvQNkwGbKu6wr5qxiHVNuy/TvrgCDdO97xLj4=]"
+  token: "![rLai+tbAnEv7HGJ2gqlFZOuvhR/UrlL5xCjHsvpSKMDe/ulASei3AEmo5wBvWYECAqcuWBIz3f9mAGT/qtO4EABhW/LoujFZbnAnbg61phc=]"
+  tokenSecret: "![ud+rWuqCZvWBJP5TzdeiHHlkRpxL+ttp0wv/TFPP0Kez12guGzi8LAJhNMe2ERwlGMmjXKDE2iHPstqUykC7xEYMHwrQlbdFXgd+MjecTNo=]"
+  realm: "3431250_SB2"
+  
 ###Kimble Interfaces Netsuite Details For Rest Call
 kimbleRestNetsuite:
-  consumerKey: "![PXyvIBEK4l6DNNMRXFsOjl2G2FByE0uXCQt/2th+/l1ZA7wqPaujrngqeYAWHla1TAF8na3f5ByE8QgRJoPx9xaQTPMoXOD7lMPfJv0gEDM=]"
-  consumerSecret: "![HDvgJ9SVwEotPxV/h5UfEcE8suYbvM0RoypvfDknyuTz9e8awOD2WP4RIyuwpNJ+sA1df4sKUyDpuqMap5mTF0F+TEzLaS1lWyy/zEedoj0=]"
-  token: "![yWhBnKjt9Dx9K8tOiz0XX88ejIsefblZRJy8TfeuBUD+JHrkID7chCJW+9fsIRT8yEMXcQdzdRsKWi3WbQyo8RFop67cTtnQrgIyCqBlf6k=]"
-  tokenSecret: "![bep9ng4cJeMMbSO80UyPIDW0Ua3rdQZWmrX+p6cU8mpRY7EidDNsjL+mRgBLbYk7kUbvGB+jgSBBXfGRC+ouTr43ZdxvS2y3aV8+zTa0Kb8=]"
-  realm: "3431250_SB99"
-  urlHost: "3431250-sb99.suitetalk.api.netsuite.com"
-  urlPathAssignment: "/services/rest/record/v1/job/"
-  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"
-  urlPathDepartment: "/services/rest/record/v1/department/eid:"   
-  
-##MQ Configuration
-mq-url: "https://mq-eu-west-2.anypoint.mulesoft.com/api/v1"
-client-id: "![GwjdFpldhnhfrJCWRDi3BP/HmxZCbzVz8to1S/uNd2wAGxT7eqvVBmoypdORmvQg]"
-client-secret: "![ZldEtBL9q2S+jLlVA1DPd+hSMNXKGCy1rGM1CVp6NhsONXLB32ZpRYtYcNdLpl79]"
+  consumerKey: "![2/yZ5Dpz19jg4Xqf8EzuZLFJEJwgJCb1zcj0Ow2TT9fvdKsq2P0lvyiHN6L8wTOKFsZQ4rXSRyga4pIwe6mrjW14LGGKE1egSqccZVcQ0Q0=]"
+  consumerSecret: "![mGQZ+k6y9jEKGEmjuzdUUhXKXAGZ7KwxlVDMYq7XuFlpTdqdtyihIhU/JxINuyF1r36AbKzvQNkwGbKu6wr5qxiHVNuy/TvrgCDdO97xLj4=]"
+  token: "![rLai+tbAnEv7HGJ2gqlFZOuvhR/UrlL5xCjHsvpSKMDe/ulASei3AEmo5wBvWYECAqcuWBIz3f9mAGT/qtO4EABhW/LoujFZbnAnbg61phc=]"
+  tokenSecret: "![ud+rWuqCZvWBJP5TzdeiHHlkRpxL+ttp0wv/TFPP0Kez12guGzi8LAJhNMe2ERwlGMmjXKDE2iHPstqUykC7xEYMHwrQlbdFXgd+MjecTNo=]"
+  realm: "3431250_SB2"
+  urlHost: "3431250-sb2.suitetalk.api.netsuite.com"
+  urlPathAssignment: "/services/rest/record/v1/job/"   
+  urlPathSalesOrder: "/services/rest/record/v1/salesorder/"   
 
-revRecMq: "revenue-recognizations-queue" 
-adjustMq: "revenue-adjustments-queue"
-successEx: "success-logs-ex"
-businessErrorEx: "business-errors-ex"
-systemErrorEx: "system-errors-ex"
-
-circuitBreaker: 
-  errortypes: "MULE:UNKNOWN,MULE:EXPRESSION,APP:HTPP_ERROR,MULE:RETRY_EXHAUSTED,HTTP:GATEWAY_TIMEOUT,HTTP:CLIENT_SECURITY,HTTP:BAD_GATEWAY,HTTP:TIMEOUT,HTTP:CONNECTIVITY,HTTP:FORBIDDEN,HTTP:INTERNAL_SERVER_ERROR,HTTP:UNAUTHORIZED,HTTP:TOO_MANY_REQUESTS,HTTP:PARSING,HTTP:SERVICE_UNAVAILABLE,WSC:CANNOT_DISPATCH, WSC:CONNECTIVITY,WSC:ENCODING, WSC:INVALID_WSDL, WSC:RETRY_EXHAUSTED, WSC:SOAP_FAULT, WSC:TIMEOUT"
-  errorCount: "5"
-  tripTimeoutMinutes: "2" 
-
-
+    
 #log category
 log:
   payload: "com.finastra.log"

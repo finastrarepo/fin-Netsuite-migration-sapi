@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
-	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns="http://www.mulesoft.org/schema/mule/core"
-	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
-http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
+http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
 	
 	
 		
 	<sub-flow
 		name="salesorder-insert-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
-		<set-variable value="#[payload.salesorder]" doc:name="salesOrderPayload"
+		<set-variable value="#[(salesOrder: payload.salesOrder) ++ (salesOrderItem: payload.salesOrderItem)]" doc:name="salesOrderPayload"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="salesOrderPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -36,507 +37,385 @@ ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns3 urn:messages.platform.webservices.netsuite.com
 ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
-
-
+ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 ---
 //payload.ns0#Envelope.ns0#Body.add.record.itemList
 {
-    soap#Envelope @("xmlns:S":"http://schemas.xmlsoap.org/soap/envelope/",
-    "xmlns:messages" : "urn:messages_2020_1.platform.webservices.netsuite.com",
-     "xmlns:accountingLists":"urn:accounting_2020_1.lists.webservices.netsuite.com",
-     "xmlns:employeesLists":"urn:employees_2020_1.lists.webservices.netsuite.com", 
-     "xmlns:employeesTransactionsTypes":"urn:types.employees_2020_1.transactions.webservices.netsuite.com" ,
-      "xmlns:demandplanningTransactions":"urn:demandplanning_2020_1.transactions.webservices.netsuite.com",
-       "xmlns:common":"urn:common_2020_1.platform.webservices.netsuite.com", 
-       "xmlns:commonTypes":"urn:types.common_2020_1.platform.webservices.netsuite.com" , 
+	soap#Envelope @("xmlns:S": "http://schemas.xmlsoap.org/soap/envelope/",
+    "xmlns:messages": "urn:messages_2020_1.platform.webservices.netsuite.com",
+     "xmlns:accountingLists": "urn:accounting_2020_1.lists.webservices.netsuite.com",
+     "xmlns:employeesLists": "urn:employees_2020_1.lists.webservices.netsuite.com", 
+     "xmlns:employeesTransactionsTypes": "urn:types.employees_2020_1.transactions.webservices.netsuite.com" ,
+      "xmlns:demandplanningTransactions": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com",
+       "xmlns:common": "urn:common_2020_1.platform.webservices.netsuite.com", 
+       "xmlns:commonTypes": "urn:types.common_2020_1.platform.webservices.netsuite.com" , 
        "xmlns:accountingListsTypes": "urn:types.accounting_2020_1.lists.webservices.netsuite.com", 
-       "xmlns:customizationSetup":"urn:customization_2020_1.setup.webservices.netsuite.com",
+       "xmlns:customizationSetup": "urn:customization_2020_1.setup.webservices.netsuite.com",
         "xmlns:inventoryTransactionsTypes": "urn:types.inventory_2020_1.transactions.webservices.netsuite.com",
-        "xmlns:supportLists":"urn:support_2020_1.lists.webservices.netsuite.com",
-        "xmlns:filecabinetDocuments":"urn:filecabinet_2020_1.documents.webservices.netsuite.com",
-  "xmlns:bankTransactionsTypes":"urn:types.bank_2020_1.transactions.webservices.netsuite.com", 
-  "xmlns:communicationGeneralTypes":"urn:types.communication_2020_1.general.webservices.netsuite.com", 
-  "xmlns:customizationSetupTypes":"urn:types.customization_2020_1.setup.webservices.netsuite.com" , 
-  "xmlns:supplychainListsTypes":"urn:types.supplychain_2020_1.lists.webservices.netsuite.com" ,
-  "xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com",
-  "xmlns:coreTypes":"urn:types.core_2020_1.platform.webservices.netsuite.com", 
- "xmlns:soapenc":"http://schemas.xmlsoap.org/soap/encoding/",
- "xmlns:supplychainLists":"urn:supplychain_2020_1.lists.webservices.netsuite.com", 
- "xmlns:demandplanningTransactionsTypes":"urn:types.demandplanning_2020_1.transactions.webservices.netsuite.com" ,
- "xmlns:websiteLists":"urn:website_2020_1.lists.webservices.netsuite.com",
- "xmlns:salesTransactions":"urn:sales_2020_1.transactions.webservices.netsuite.com",
- "xmlns:salesTransactionsTypes":"urn:types.sales_2020_1.transactions.webservices.netsuite.com", 
- "xmlns:relationshipsLists":"urn:relationships_2020_1.lists.webservices.netsuite.com", 
- "xmlns:inventoryTransactions":"urn:inventory_2020_1.transactions.webservices.netsuite.com",
- "xmlns:employeesListsTypes":"urn:types.employees_2020_1.lists.webservices.netsuite.com",
- "xmlns:xsi":"http://www.w3.org/2001/XMLSchema-instance", 
- "xmlns:customersTransactions":"urn:customers_2020_1.transactions.webservices.netsuite.com",
- "xmlns:schedulingActivitiesTypes":"urn:types.scheduling_2020_1.activities.webservices.netsuite.com", 
- "xmlns:financialTransactions":"urn:financial_2020_1.transactions.webservices.netsuite.com", 
- "xmlns:xsd":"http://www.w3.org/2001/XMLSchema", 
- "xmlns:relationshipsListsTypes":"urn:types.relationships_2020_1.lists.webservices.netsuite.com",
- "xmlns:employeesTransactions":"urn:employees_2020_1.transactions.webservices.netsuite.com",
- "xmlns:faults":"urn:faults_2020_1.platform.webservices.netsuite.com",
- "xmlns:marketingListsTypes":"urn:types.marketing_2020_1.lists.webservices.netsuite.com",
- "xmlns:communicationGeneral":"urn:communication_2020_1.general.webservices.netsuite.com",
- "xmlns:faultsTypes":"urn:types.faults_2020_1.platform.webservices.netsuite.com",
- "xmlns:supportListsTypes":"urn:types.support_2020_1.lists.webservices.netsuite.com",
- "xmlns:websiteListsTypes":"urn:types.website_2020_1.lists.webservices.netsuite.com",
- "xmlns:purchasesTransactions":"urn:purchases_2020_1.transactions.webservices.netsuite.com",
- "xmlns:financialTransactionsTypes":"urn:types.financial_2020_1.transactions.webservices.netsuite.com",
- "xmlns:schedulingActivities":"urn:scheduling_2020_1.activities.webservices.netsuite.com",
- "xmlns:bankTransactions":"urn:bank_2020_1.transactions.webservices.netsuite.com",
- "xmlns:marketingLists":"urn:marketing_2020_1.lists.webservices.netsuite.com",
- "xmlns:customersTransactionsTypes":"urn:types.customers_2020_1.transactions.webservices.netsuite.com",
- "xmlns:purchasesTransactionsTypes":"urn:types.purchases_2020_1.transactions.webservices.netsuite.com",
- "xmlns:generalTransactions":"urn:general_2020_1.transactions.webservices.netsuite.com",
- "xmlns:filecabinetDocumentsTypes":"urn:types.filecabinet_2020_1.documents.webservices.netsuite.com" ): {
-              soap#Header:{
-            urn#tokenPassport:{
-                ns8#account : p('kimbleSoapNetsuite.realm'),
-                ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
-                ns8#token: p('secure::kimbleSoapNetsuite.token'),
-                ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
-                ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
-                ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2] },
-                
-       ns1#preferences :{
-        ns2#ignoreReadOnlyFields  :true } ,
-   
-    ns3#searchPreferences  :{
-        ns4#bodyFieldsOnly : true ,
-        ns5#pageSize :50   }
- },
-        
-    
-    soap#Body:{
-        ns24#upsertList @("xmlns:ns5":"urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
-		"xmlns:ns6":"urn:relationships_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns3":"urn:common_2020_1.platform.webservices.netsuite.com" ,
-		"xmlns:ns4":"urn:communication_2020_1.general.webservices.netsuite.com" ,
-		"xmlns:ns9":"urn:sales_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns7":"urn:support_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns8":"urn:accounting_2020_1.lists.webservices.netsuite.com" ,
+        "xmlns:supportLists": "urn:support_2020_1.lists.webservices.netsuite.com",
+        "xmlns:filecabinetDocuments": "urn:filecabinet_2020_1.documents.webservices.netsuite.com",
+  "xmlns:bankTransactionsTypes": "urn:types.bank_2020_1.transactions.webservices.netsuite.com", 
+  "xmlns:communicationGeneralTypes": "urn:types.communication_2020_1.general.webservices.netsuite.com", 
+  "xmlns:customizationSetupTypes": "urn:types.customization_2020_1.setup.webservices.netsuite.com" , 
+  "xmlns:supplychainListsTypes": "urn:types.supplychain_2020_1.lists.webservices.netsuite.com" ,
+  "xmlns:core": "urn:core_2020_1.platform.webservices.netsuite.com",
+  "xmlns:coreTypes": "urn:types.core_2020_1.platform.webservices.netsuite.com", 
+ "xmlns:soapenc": "http://schemas.xmlsoap.org/soap/encoding/",
+ "xmlns:supplychainLists": "urn:supplychain_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:demandplanningTransactionsTypes": "urn:types.demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+ "xmlns:websiteLists": "urn:website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:salesTransactions": "urn:sales_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:salesTransactionsTypes": "urn:types.sales_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:relationshipsLists": "urn:relationships_2020_1.lists.webservices.netsuite.com", 
+ "xmlns:inventoryTransactions": "urn:inventory_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:employeesListsTypes": "urn:types.employees_2020_1.lists.webservices.netsuite.com",
+ "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance", 
+ "xmlns:customersTransactions": "urn:customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivitiesTypes": "urn:types.scheduling_2020_1.activities.webservices.netsuite.com", 
+ "xmlns:financialTransactions": "urn:financial_2020_1.transactions.webservices.netsuite.com", 
+ "xmlns:xsd": "http://www.w3.org/2001/XMLSchema", 
+ "xmlns:relationshipsListsTypes": "urn:types.relationships_2020_1.lists.webservices.netsuite.com",
+ "xmlns:employeesTransactions": "urn:employees_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:faults": "urn:faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:marketingListsTypes": "urn:types.marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:communicationGeneral": "urn:communication_2020_1.general.webservices.netsuite.com",
+ "xmlns:faultsTypes": "urn:types.faults_2020_1.platform.webservices.netsuite.com",
+ "xmlns:supportListsTypes": "urn:types.support_2020_1.lists.webservices.netsuite.com",
+ "xmlns:websiteListsTypes": "urn:types.website_2020_1.lists.webservices.netsuite.com",
+ "xmlns:purchasesTransactions": "urn:purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:financialTransactionsTypes": "urn:types.financial_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:schedulingActivities": "urn:scheduling_2020_1.activities.webservices.netsuite.com",
+ "xmlns:bankTransactions": "urn:bank_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:marketingLists": "urn:marketing_2020_1.lists.webservices.netsuite.com",
+ "xmlns:customersTransactionsTypes": "urn:types.customers_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:purchasesTransactionsTypes": "urn:types.purchases_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:generalTransactions": "urn:general_2020_1.transactions.webservices.netsuite.com",
+ "xmlns:filecabinetDocumentsTypes": "urn:types.filecabinet_2020_1.documents.webservices.netsuite.com"): {
+		soap#Header: {
+			urn#tokenPassport: {
+				ns8#account: p('kimbleSoapNetsuite.realm'),
+				ns8#consumerKey: p('secure::kimbleSoapNetsuite.consumerKey'),
+				ns8#token: p('secure::kimbleSoapNetsuite.token'),
+				ns8#nonce: (vars.oAuthHeaderFinal splitBy(","))[0],
+				ns8#timestamp: (vars.oAuthHeaderFinal splitBy(","))[1],
+				ns8#signature @("algorithm": p('soap.algorithm')): (vars.oAuthHeaderFinal splitBy(","))[2]
+			},
+			ns1#preferences: {
+				ns2#ignoreReadOnlyFields: true
+			},
+			ns3#searchPreferences: {
+				ns4#bodyFieldsOnly: true,
+				ns5#pageSize: 50
+			}
+		},
+		soap#Body: {
+			ns24#upsertList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
+		"xmlns:ns6": "urn:relationships_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns3": "urn:common_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns4": "urn:communication_2020_1.general.webservices.netsuite.com" ,
+		"xmlns:ns9": "urn:sales_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns7": "urn:support_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns8": "urn:accounting_2020_1.lists.webservices.netsuite.com" ,
 		"xmlns": "urn:core_2020_1.platform.webservices.netsuite.com",
-		"xmlns:ns19":"urn:employees_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns18":"urn:website_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns2":"urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
-		"xmlns:ns17":"urn:employees_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns16":"urn:customization_2020_1.setup.webservices.netsuite.com" ,
-		"xmlns:ns15":"urn:general_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns14":"urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns13":"urn:bank_2020_1.transactions.webservices.netsuite.com" ,	
-		"xmlns:ns12":"urn:financial_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns23":"urn:faults_2020_1.platform.webservices.netsuite.com" ,
-		"xmlns:ns11":"urn:customers_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns22":"urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
-		"xmlns:ns10":"urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns21":"urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
-		"xmlns:ns20":"urn:marketing_2020_1.lists.webservices.netsuite.com") : {
-             ns24#record @("xsi:type":"ns6:Job","externalId" : vars.salesOrderPayload.id , "xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance"):{
-                             
-                
-     //          customFieldList: {
-		//				customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
-			//				value: p('invoice.creditBody')
-				//		}
-					//},
-					
-				ns6#customForm @( "internalId" : vars.salesOrderPayload.nsFormId ) : "" ,
-				ns6#entity @("internalId": vars.salesOrderPayload.billToCustomerInternalId) :"",
-				ns6#currency @("internalId" : vars.salesOrderPayload.nsCurrencyInternalId ) : "" ,
-				ns6#drAccount @("internalId" : vars.salesOrderPayload.nsSubsidiaryInternalId ) : "" ,
-				ns6#tranDate : vars.salesOrderPayload.projectStartDate ++ "T00:00:00.000"  ,
-				ns6#orderStatus @("internalId" : vars.salesOrderPayload.orderStatusCode ) : "" ,
-				ns6#startDate @("internalId" : vars.salesOrderPayload.orderStartDate ) : "" ,
-				ns6#endDate @("internalId" : vars.salesOrderPayload.orderEndDate ) : "" ,
-				ns6#otherRefNum @("internalId" : vars.salesOrderPayload.customerPONumber ) : "" ,
-				ns6#email @("internalId" : vars.salesOrderPayload.nsBillToEmail ) : "" ,
-				ns6#billAddressList @("internalId" : vars.salesOrderPayload.nsBillingAddressInternalId ) : "" ,
-				ns6#shipAddressList @("internalId" : vars.salesOrderPayload.nsTaxationAddressInternalId ) : "" ,
-				ns6#revRecOnRevCommitment @("internalId" : vars.salesOrderPayload.nsRevRecOnCommit ) : "" ,
-				ns6#class @("internalId" : vars.salesOrderPayload.nsProductAnalysisInternalId ) : "" ,
-				ns6#department @("internalId" : vars.salesOrderPayload.nsCostCentreInternalId ) : "" ,
-				ns6#location @("internalId" : vars.salesOrderPayload.nsFinanceRegionInternalId ) : "" ,
-				ns6#terms @("internalId" : vars.salesOrderPayload.nsTermInternalId ) : "" ,
-				ns6#tranIsVsoeBundle @("internalId" : vars.salesOrderPayload.transactionIsVSOEBundle ) : "" ,
-				ns6#vsoeAutoCalc @("internalId" : vars.salesOrderPayload.nsAutoCalculateVSOEAllocation ) : "" ,
-				
-				
-                ns6#itemList:{
-                	
-                        item  @("internalId": vars.salesOrderPayload.nsItemInternalId ):"",
-                        quantity : vars.salesOrderPayload.quantity ,
-                        description: vars.salesOrderPayload.description ,
-                        rate  : vars.salesOrderPayload.rate,
-                        department : vars.salesOrderPayload.psCostCentreInternalId ,
-                        location  @("internalId":vars.salesOrderPayload.location):"",
-                        revRecSchedule  @("internalId": vars.salesOrderPayload.revRecScheduleInternalId ):"",
-                        revRecStartDate  :vars.salesOrderPayload.revRecStartDate ,
-                        revRecEndDate : vars.salesOrderPayload.revRecStartDate ,
-                        
-                        line : vars.salesOrderPayload.line ,
-                        
-                        vsoePrice : vars.salesOrderPayload.vsoePrice ,
-                        
-                        vsoeAllocation : vars.salesOrderPayload.vsoeAllocationAmount,
-                                                
-                        vsoeDelivered : vars.salesOrderPayload.vsoeDelivered ,
-                        
-                 
-                  ns6#customFieldList:{      
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                        
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Product_InternalId"):{ value @("internalId" : vars.salesOrderPayload.vsoeAllocationAmount ): ""},
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Owner_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Cost_Centre_InternalId"):{ value @("internalId" : vars.salesOrderPayload.vsoeAllocationAmount ): ""},
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_PS_Top_Opportunity"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_PS_Forecast_Probability"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custentity_sfdc_opp_probability "):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                       
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Export_to_OpenAir"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_OpenAir__Project_Stage_InternalId"):{ value @("internalId" : vars.salesOrderPayload.vsoeAllocationAmount ): ""},
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_OpenAir_Project_Template_InternalId"):{ value @("internalId" : vars.salesOrderPayload.vsoeAllocationAmount ): ""},
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_PS_Practice_Name_InternalId"):{ value @("internalId" : vars.salesOrderPayload.vsoeAllocationAmount ): ""},
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_PS_Practice_Unique_Code"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-						customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DoubleCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Service_Type"):{ value : vars.salesOrderPayload.vsoeAllocationAmount },
-                        
-                        } },
-         
-		 ns6#customFieldList:{      
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                        
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                        
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                       
-                       customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  },
-                      
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custom_Project_Category_InternalId"):{ value : vars.salesOrderPayload.vsoeAllocationAmount  }
-         
-                       }
+		"xmlns:ns19": "urn:employees_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns18": "urn:website_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns2": "urn:scheduling_2020_1.activities.webservices.netsuite.com" ,
+		"xmlns:ns17": "urn:employees_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns16": "urn:customization_2020_1.setup.webservices.netsuite.com" ,
+		"xmlns:ns15": "urn:general_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns14": "urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns13": "urn:bank_2020_1.transactions.webservices.netsuite.com" ,	
+		"xmlns:ns12": "urn:financial_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns23": "urn:faults_2020_1.platform.webservices.netsuite.com" ,
+		"xmlns:ns11": "urn:customers_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns22": "urn:supplychain_2020_1.lists.webservices.netsuite.com" ,
+		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
+		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
+				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderPayload.salesOrder18CharacterId , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+					// customFieldList: {
+					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
+					// value: p('invoice.creditBody')
+					// }
+					// },
+					ns9#customForm @("internalId": vars.salesOrderPayload.nsFormId): "",
+					ns9#entity @("internalId": vars.salesOrderPayload.billToCustomerInternalId): "",
+					ns9#currency @("internalId": vars.salesOrderPayload.nsCurrencyInternalId): "",
+					ns9#drAccount @("internalId": vars.salesOrderPayload.nsDeferredRevRecAccInternalId): "",
+					ns9#tranDate: vars.salesOrderPayload.orderDate ++ "T00:00:00.000",
+					ns9#orderStatus @("internalId": vars.salesOrderPayload.orderStatusCode): "",
+					ns9#startDate @("internalId": vars.salesOrderPayload.orderStartDate): "",
+					ns9#endDate @("internalId": vars.salesOrderPayload.orderEndDate): "",
+					ns9#otherRefNum @("internalId": vars.salesOrderPayload.customerPONumber): "",
+					ns9#memo @("internalId": vars.salesOrderPayload.memo): "",
+					ns9#fax @("internalId": vars.salesOrderPayload.nsFaxNumber): "",
+					ns9#email @("internalId": vars.salesOrderPayload.nsBillToEmail): "",
+					ns9#billAddressList @("internalId": vars.salesOrderPayload.nsBillingAddressInternalId): "",
+					ns9#shipAddressList @("internalId": vars.salesOrderPayload.nsTaxationAddressInternalId): "",
+					ns9#revRecOnRevCommitment @("internalId": vars.salesOrderPayload.nsRevRecOnCommit): "",
+					ns9#class @("internalId": vars.salesOrderPayload.nsProductAnalysisInternalId): "",
+					ns9#department @("internalId": vars.salesOrderPayload.nsCostCentreInternalId): "",
+					ns9#location @("internalId": vars.salesOrderPayload.nsFinanceRegionInternalId): "",
+					ns9#terms @("internalId": vars.salesOrderPayload.nsTermInternalId): "",
+					ns9#tranIsVsoeBundle @("internalId": vars.salesOrderPayload.transactionIsVSOEBundle): "",
+					ns9#vsoeAutoCalc @("internalId": vars.salesOrderPayload.nsAutoCalculateVSOEAllocation): "",
+					ns9#itemList: {
+						item  @("internalId": vars.salesOrderPayload.nsItemInternalId): "",
+						quantity: vars.salesOrderPayload.quantity,
+						description: vars.salesOrderPayload.description,
+						rate: vars.salesOrderPayload.rate,
+						department: vars.salesOrderPayload.psCostCentreInternalId,
+						revRecSchedule  @("internalId": vars.salesOrderPayload.revRecScheduleInternalId): "",
+						revRecStartDate: vars.salesOrderPayload.revRecStartDate,
+						revRecEndDate: vars.salesOrderPayload.revRecStartDate,
+						line: vars.salesOrderPayload.line,
+						vsoePrice: vars.salesOrderPayload.vsoePrice,
+						vsoeAllocation: vars.salesOrderPayload.vsoeAllocationAmount,
+						vsoeDelivered: vars.salesOrderPayload.vsoeDelivered,
+						ns9#customFieldList: vars.salesOrderPayload.salesOrderItem map(item,value) -> {
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_rev_rec_rule"): {
+								value: item.openairRevRecRuleInternalId
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_billing_rule_type"): {
+								value : item.openairBillingRuleInternalId
+								},
+								
+							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
+								value: item.softwareDelivered
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
+								value : item.nonGA
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_3pp_rate"): {
+								value: item.thirdpartyCostsPOCcy
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_rate_currency"): {
+								value @("internalId": item.thirdPartyPOCurrencyInternalId ):""
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_mis_ps_carveout_amt"): {
+								value: item.fairValueAdjustment
+
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misysvaluelist"): {
+								value @("internalId": item.listValue) : ""
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysdiscount"): {
+								value : item.discount
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysrevenuecontracted"): {
+								value @("internalId": item.salesPrice): ""
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysvaluefair"): {
+								value : item.fairValue
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_internalcost"): {
+								value: item.internalCosts
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdcontractorcost"): {
+								value: item.thirdPartyContractorCostdealccy
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdpartycost"): {
+								value: item.thirdPartyCostsdealcurrency
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostrecvalue"): {
+								value: item.reimbursableCostsRecoveryValue
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostestimate"): {
+								value: item.reimbursableCostsEstimate
+
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluelist"): {
+								value: item.perDiemListValue
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluecont"): {
+								value: item.perDiemContractedValue
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysunrecoverablecost"): {
+								value: item.unrecoverableCosts
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonserviceincldcarveout"): {
+								value: item.profitonServicesincCarveOut
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonservice"): {
+								value: item.profitonService
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyschargeablehours"): {
+								value: item.totalChargeableHours
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyscontractorhours"): {
+								value: item.totalNumberOfContractorHours
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysnonbillablehours"): {
+								value: item.totalNumberOfNonBillableHours
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misystravelhour"): {
+								value: item.totalNumberOfTravelHours
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_vendor_billing_schedule_3pp"): {
+								value: item.nsVendorBillingScheduleInternalId
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_location"): {
+								value: item.location
+
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_vendor_bsch_trigger"): {
+								value: item.vendorBSchTriggerInternalId
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalhours"): {
+								value: item.totalHours
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalbillablehours"): {
+								value: item.totalBillableHours
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_totalcost"): {
+								value: item.totalCost
+
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_create_3pp_po"): {
+								value @("internalId" : item.create3PPEvent ):""
+								
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_licence_basis"): {
+								value: item.licenseMetric
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_environ"): {
+								value: item.environment
+
+							},
+							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_license_band_quantity"): {
+								value: item.licenceband
+
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
+								value: item.fairValue
+
+							},
+							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
+								value: item.softwareDelivered
+
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
+								value: item.revRecEndDate
+
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
+								value: item.revRecStartDate
+
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
+								value: item.revRecScheduleInternalId
 
 
+							},
+							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_vsoeallocation"): {
+								value: item.fairValue
 
-}
 
-}
-}
-}
+							},
+							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_us_tax_type_code"): {
+								value: item.taxCode
+							}
+						}
+					},
+					ns9#customFieldList: {
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_delivery_address"): {
+							value: vars.salesOrderPayload.altDeliveryAddress
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_exportedfromsfdc"): {
+							value: "true"
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_syncedtosfdc"): {
+							value: "false"
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_transactioncategory"): {
+							value @("internalId": vars.salesOrderPayload.orderTypeInternalId ):""
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_porequired"): {
+							value: vars.salesOrderPayload.poRequired
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misysref"): {
+							value: vars.salesOrderPayload.opportunityNumber
 
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_invoice_credit_body"): {
+							value @( "internalId" : vars.salesOrderPayload.invoiceCreditBodyInternalId) : ""
+
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbodycustbody_creditcontroller"): {
+							value @( "internalId" :  vars.salesOrderPayload.soCreditControllerInternalId): ""
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_contractno"): {
+							value: vars.salesOrderPayload.contractNumber
+													},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbodycustbody_cashaccounting"): {
+							value: vars.salesOrderPayload.nsCashAccounting
+
+						},
+						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_billing_contact"): {
+							value: vars.salesOrderPayload.nsBillingContactInternalId
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_docmemo"): {
+							value: vars.salesOrderPayload.documentMemo
+
+						},
+						customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custbody_contractdate"): {
+							value: vars.salesOrderPayload.nsContractDate
+						},
+						
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_mys_tax_combo_chck"): {
+							value: vars.salesOrderPayload.taxComboCheck
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_sfdc_billing_group_id"): {
+							value: vars.salesOrderPayload.billingGroup
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_ps_practice_name"): {
+							value: vars.salesOrderPayload.psPractiseNameInternalId
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_ps_practice_unique_code"): {
+							value: vars.salesOrderPayload.psPractiseUniqueCode
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misyssalestype_str"): {
+							value: vars.salesOrderPayload.opportunityDealType
+
+						},
+						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_legacy_ref"): {
+							value: vars.salesOrderPayload.opportunityNumberText
+
+						},
+						//customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misyssalestype_str"): {
+						//	value: vars.salesOrderPayload.opportunityDealType
+
+						//}
+					}
+				}
+			}
+		}
+	}
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
@@ -576,10 +455,24 @@ payload]]></ee:set-variable>
 				</wsc:message>
 			</wsc:consume>
 			<error-handler>
-				<on-error-propagate enableNotifications="true"
-					logException="true" doc:name="On Error Propagate"
-					doc:id="d2018621-38fc-44fd-8fcd-69d866e475f9" type="ANY">
-					<logger level="INFO" doc:name="Logger" doc:id="49ce87a1-e28d-4170-8369-4eece807d1ac" message="#[error.description]"/>
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="bbc3c7ab-cd88-45ba-9253-782485b83a62" type="ANY" >
+					<logger level="INFO" doc:name="Logger" doc:id="502c9025-e5cb-44c8-a16b-ae5bd887ccae" message="#[error.description]" />
+					<ee:transform doc:name="Transform Message" doc:id="f63af5dd-198c-44e2-b83e-808e274426a7" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<anypoint-mq:publish doc:name="Publish" doc:id="25ae3b7e-ed5b-410e-b095-10a44fa8ce4f" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
+						<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	objectName : Job
+}]]]></anypoint-mq:properties>
+					</anypoint-mq:publish>
 				</on-error-propagate>
 			</error-handler>
 		</try>
@@ -644,7 +537,7 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="9f0dce93-9754-4edb-b817-e3e3bf3ea175" >
 			<when expression="#[vars.isSuccess.message == 'true']">
-				<flow-ref doc:name="job_rest_call_" doc:id="c4ca41c9-b02d-4605-8756-6a344850cf5e" name="job_rest_call_" />
+				<flow-ref doc:name="salesOrder_rest_call_" doc:id="c4ca41c9-b02d-4605-8756-6a344850cf5e" name="salesOrder_rest_call_" />
 				<ee:transform doc:name="Transform Message" doc:id="4e92bc6c-3c64-4b69-9a5d-4e377a727861" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -652,23 +545,45 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	salesOrder:
+	{
+	externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	internalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
-}]]></ee:set-payload>
+	tranId : vars.restRsp.tranId,
+	exchangeRate: vars.restRsp.exchangeRate
+}}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
+				<anypoint-mq:publish doc:name="Publish" doc:id="6cdfdeee-f932-49bb-8853-6e8eeefb0b3f" config-ref="Anypoint_MQ_Config" destination="project-setup-rsp-queue">
+					<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	"objectName" : "salesOrder"
+}]]]></anypoint-mq:properties>
+				</anypoint-mq:publish>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="d9c31860-901a-44d6-95a5-7b8ecef530cb" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	//error payload
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="0d82028a-f207-488f-bb7c-e40daaac2c97" />
 			</otherwise>
 		</choice>
+		<flow-ref doc:name="log-payload" doc:id="a74b11f5-1da6-47ef-b9fd-30411f6ae926" name="log-payload"/>
 	
 	</sub-flow>
 	<sub-flow name="salesorder_update_impl" doc:id="eadc5b59-d711-4a8e-8e29-95ea66b0eb5e" >
-		<set-variable value="#[payload.salesorder]" doc:name="salesOrderUpdatePayload" doc:id="31143223-882a-41b6-8403-ec051a318886" variableName="salesOrderUpdatePayload" mimeType="application/json" />
+		<set-variable value="#[(salesOrder: payload.salesOrder) ++ (salesOrderItem: payload.salesOrderItem)]" doc:name="salesOrderUpdatePayload" doc:id="31143223-882a-41b6-8403-ec051a318886" variableName="salesOrderUpdatePayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader" doc:id="ad02da92-3764-42b9-88cf-72d2352ae1ca" name="oauth-header-generator-soapHeader" />
 		<logger level="INFO" doc:name="Logger" doc:id="5a93ea75-f89f-4eec-bab4-88dd214728bc" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
 		<choice doc:name="Choice" doc:id="b8744b40-9d57-49a8-8d34-fd22c23990e1" >
@@ -1017,90 +932,37 @@ payload]]></ee:set-variable>
 				</wsc:message>
 			</wsc:consume>
 			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7eda4ae3-91e9-4b68-9490-167c5f7f5fb1" type="ANY" >
-					<logger level="INFO" doc:name="Logger" doc:id="429f89e6-667e-44f3-a450-9828402bdc05" message="#[error.description]" />
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="ed43610f-10d0-40f2-aa37-a1253611bd23" type="ANY" >
+					<logger level="INFO" doc:name="Logger" doc:id="4c9a4e0a-eb3d-47f6-a487-f9b20edfa10a" message="#[error.description]" />
+					<ee:transform doc:name="Transform Message" doc:id="1dc15ac5-cb74-4f39-bd3a-d962abd7e156" >
+						<ee:message >
+							<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+}]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<anypoint-mq:publish doc:name="Publish" doc:id="dc61c0fe-ffd8-49b9-aeff-4ba6933725eb" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
+						<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	objectName : Job
+}]]]></anypoint-mq:properties>
+					</anypoint-mq:publish>
 				</on-error-propagate>
 			</error-handler>
 		</try>
 		<logger level="INFO" doc:name="Logger" doc:id="363b8ed5-b77c-49b5-a81f-1e9b2dc31618" message="#[vars.responsePayload]" />
-		<ee:transform doc:name="netsuiteInternalId" doc:id="b0defd3f-f422-490d-8563-175cc6c16466" >
+		<ee:transform doc:name="Transform Message" doc:id="f9bba697-1976-4f37-b98e-fd08332037d7" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+output application/xml
 ---
-{
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
-	syncedToNS: true
-}]]></ee:set-payload>
+vars.responsePayload]]></ee:set-payload>
 			</ee:message>
-			<ee:variables />
 		</ee:transform>
-		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="fe57cd49-9464-4066-86a4-f7a0f2d04e24" message="#[payload]" />
-		<logger level="INFO" doc:name="Logger for error code" doc:id="d440a83e-1fd8-4c45-96fa-a00cb9876a22" message="#[%dw 2.0
-output application/json
----
-{
-       (code: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code) if (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code != null)
-       
-}]" />
-		<logger level="INFO" doc:name="Logger" doc:id="91e58cd2-8c7d-4de5-8396-f63f83266b49" message='#[%dw 2.0
-output application/json 
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
-ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
----
-{
-	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
-	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
-}]' />
-		<ee:transform doc:name="netsuiteInternalId" doc:id="4add9ee8-6e9a-4284-949c-7d45880b8c34" >
-			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="isSuccess" ><![CDATA[%dw 2.0
-output application/json 
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
-ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
----
-{
-	
-	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
-}]]></ee:set-variable>
-				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
-output application/json 
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
-ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
----
-{
-	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
-	
-	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
-}]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<choice doc:name="Choice" doc:id="1a6f7982-3099-4701-aeec-5ccf33444bb1" >
-			<when expression="#[vars.isSuccess.message == 'true']" >
-				<flow-ref doc:name="job_rest_call_" doc:id="464ea691-ee17-4513-bafe-8c2d69bdd540" name="job_rest_call_" />
-				<ee:transform doc:name="Transform Message" doc:id="705d4b4c-d089-4165-8f3a-e6915ad6e136" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
----
-{
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
-	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
-}]]></ee:set-payload>
-					</ee:message>
-				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="e0c57783-06c5-4d3f-a4bb-d3be2e9be62d" message="#[payload]" />
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="4ea16dc5-a0af-4fc2-a635-b518b3a5b8fc" message="#[payload]" />
-			</otherwise>
-		</choice>
+		<flow-ref doc:name="log-payload" doc:id="8ea579ef-3d29-499c-9f2f-d790d6e89612" name="log-payload"/>
 	</sub-flow>
 	
 	

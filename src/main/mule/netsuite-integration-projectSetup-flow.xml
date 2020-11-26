@@ -16,14 +16,58 @@ http://www.mulesoft.org/schema/mule/netsuite http://www.mulesoft.org/schema/mule
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
 	<sub-flow name="netsuite-integration-projectSetup-flowSub_Flow" doc:id="91c4ee31-1017-48f0-954f-bca7e63dc1e0" >
-		<logger level="INFO" doc:name="Logger" doc:id="84b24689-f8ec-429b-8cb2-bbfa2c8db6a9" message='#[{requestFor:"ProjectSetUp"} ++ payload]'/>
+		<ee:transform doc:name="Transform Message" doc:id="91b89218-6ce9-4e99-96f1-fed8e4eccfbc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+import modules::filterEmptyObjects
+
+---
+filterEmptyObjects::filterEmptyObjects(payload)]]></ee:set-payload>
+			</ee:message>
+			<ee:variables >
+				<ee:set-variable variableName="t" ><![CDATA[%dw 2.0
+output application/java
+---
+{Incomingrequest : "        "} ++ payload]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="Logger" doc:id="84b24689-f8ec-429b-8cb2-bbfa2c8db6a9" message='#[{Incomingrequest : "        "} ++ payload]'/>
 		<choice doc:name="Choice" doc:id="90b9eeb5-13d0-404d-90e6-4b6c4bf9f1ab" >
 			<when expression="#[(!(isEmpty(payload.nsProject)))]">
+				<logger level="INFO" doc:name="Setup call" doc:id="f86bcc3b-1b6d-401a-a3b6-3bdea939e76b" message="****Project Setup call*****"/>
 				<flow-ref doc:name="Job-Implementation" doc:id="5f5b0d32-754c-4175-accb-580c4c8b9e3e" name="Job-Implementation"/>
 			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="4f27c062-4c8f-44a9-8fad-ba66c7ab08de" message="Project task "/>
-				<flow-ref doc:name="ProjectTask-Implementation" doc:id="22d19668-24b6-4f32-8902-da57a22a0b83" name="vendorBilling-Implementation"/>
+			<when expression="#[(!(isEmpty(payload.nsProjectMilestone)))]">
+				<logger level="INFO" doc:name="Milestone" doc:id="dd07af92-21d2-4814-af7d-7d2136a41a97" message="****Project Milestone*****"/>
+				<flow-ref doc:name="ProjectTask-Implementation" doc:id="f50d8ddb-92be-45ab-83a2-c054910ca8bc" name="ProjectTask-Implementation"/>
+			</when>
+			<when expression="#[(!(isEmpty(payload.salesOrder)))]">
+				<choice doc:name="Choice" doc:id="57cb3bab-d33b-465c-ad54-11e4b8b7bb72" >
+					<when expression="#[payload.salesOrder.primarysales == 'true']">
+						<logger level="INFO" doc:name="SalesOrder Insert " doc:id="9c4f767d-23ac-40d9-8a81-9f9c7f1ce322" message="****Project SalesOrder Insert*****" />
+						<flow-ref doc:name="Flow Reference" doc:id="d6a0d693-92cc-4cab-9b52-79e773e1ff40" name="salesOrder_rest_call_" />
+					</when>
+					<otherwise >
+						<logger level="INFO" doc:name="SalesOrder Update " doc:id="34a2234e-9280-42fd-920b-c83d70d4c43e" message="****Project SalesOrder Update*****"/>
+						<flow-ref doc:name="salesorder_update_impl" doc:id="9d811d7b-441e-49fb-9a82-7465a4a2616c" name="salesorder_update_impl"/>
+					</otherwise>
+				</choice>
+			</when>
+			<when expression="#[(!(isEmpty(payload.nsCustomerBilling)))]">
+				<logger level="INFO" doc:name="CustomerBilling" doc:id="a9f20447-4fe0-4187-ab1d-ddfa820e7718" message="****Project CustomerBilling*****"/>
+				<flow-ref doc:name="customerBilling-Implementation" doc:id="659eae1b-c916-41c2-9084-31baf5f56001" name="customerBilling-Implementation"/>
+			</when>
+			<when expression="#[(!(isEmpty(payload.nsVendorBillingSchedule)))]">
+				<logger level="INFO" doc:name="VendorBilling" doc:id="2a7432f9-f0b9-453e-89a9-688fb77c8731" message="****Project VendorBilling*****"/>
+				<flow-ref doc:name="vendorBilling-Implementation" doc:id="6f870b6d-3080-4b2c-ac86-53f50281e5b6" name="vendorBilling-Implementation"/>
+			</when>
+			<when expression="#[(!(isEmpty(payload.nsVendorBillingLinePayload)))]">
+				<logger level="INFO" doc:name="****Project VendorBillingScheduleLine*****" doc:id="10da91fc-4091-4e14-b7c3-f3899f7bf5b5" message="****Project VendorBillingScheduleLine*****"/>
+				<flow-ref doc:name="VendorBillingScheduleLine-Implementation" doc:id="9c832e43-0c14-4076-9c79-638a6a4da6c2" name="VendorBillingScheduleLine-Implementation"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="NO ACTION " doc:id="13882350-1671-4bfa-b7ab-0b6b730284ac" message="NO ACTION "/>
 			</otherwise>
 		</choice>
 	</sub-flow>

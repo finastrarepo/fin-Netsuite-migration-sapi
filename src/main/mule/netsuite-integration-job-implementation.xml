@@ -271,13 +271,14 @@ payload]]></ee:set-variable>
 					<ee:transform doc:name="Transform Message" doc:id="cbad5f9e-ba98-4dc4-bb44-3cc34a1bef9a" >
 						<ee:message >
 							<ee:set-payload ><![CDATA[%dw 2.0
-output application/java
+output application/json
 ---
 {
+	//errormessage
 }]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<anypoint-mq:publish doc:name="Publish" doc:id="3296f6ff-9629-466f-9229-e4900a12767b" config-ref="Anypoint_MQ_Config" destination="project-setup-status-queue">
+					<anypoint-mq:publish doc:name="Publish" doc:id="3296f6ff-9629-466f-9229-e4900a12767b" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue">
 						<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
