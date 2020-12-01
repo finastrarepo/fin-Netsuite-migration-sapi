@@ -270,9 +270,21 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
-				<anypoint-mq:publish doc:name="Publish" doc:id="b74af345-85f6-49d6-a51e-e31dab4ae9a8" config-ref="Anypoint_MQ_Config" destination="project-setup-res-queue"/>
-			</when>
+				<logger level="INFO" doc:name="Logger - BEFOREE MQ" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
+				<anypoint-mq:publish doc:name="Publish" doc:id="85c0391d-0e64-4361-800b-eda28501b69e" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "customerBillingSchedule",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+		</anypoint-mq:publish>
+				
+					</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
 				<ee:transform doc:name="Transform Message" doc:id="5e1b4d8b-6bfb-43f8-b8e1-5eeb3bc71710">

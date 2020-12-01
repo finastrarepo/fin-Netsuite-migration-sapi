@@ -60,7 +60,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<global-property doc:name="Global Property"
 		doc:id="8611af96-b8e8-4ad3-b122-5cbd054feb99"
 		name="anypoint_application_encryption_key"
-		value="weoijwerjflkdjlakjhfalldfkjdljfs" />
+		value="gqikztodczvzrqssbfhvbrupobuznuoy" />
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="35abb981-8689-4ede-891c-705d445054f1" file="env\${anypoint_application_environment}_properties.yaml" key="${anypoint_application_encryption_key}" />
 		
 	

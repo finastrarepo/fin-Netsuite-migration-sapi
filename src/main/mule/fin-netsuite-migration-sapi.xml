@@ -8,12 +8,17 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<flow name="fin-netsuite-migration-sapiFlow1" doc:id="2046ab64-3b3b-4c4b-af7e-2cc43cdbc1a7" >
 		<http:listener doc:name="Listener" doc:id="e56959e2-02ce-448d-adb7-a529fd2a450c" config-ref="HTTP_Listener_config" path="/api"/>
 		<logger level="INFO" doc:name="Logger" doc:id="956b49b8-72e3-43fe-be6b-790100c17ce9" message="#[payload]"/>
-		<anypoint-mq:publish doc:name="Publish" doc:id="452ffb42-b09b-46e3-97e2-eb3301b012f3" config-ref="Anypoint_MQ_Config" destination="project-setup-req-queue">
+		<anypoint-mq:publish doc:name="Publish" doc:id="586bc303-2797-4d58-917c-2c4bfcae5164" config-ref="Anypoint_MQ_Config" destination="${secure::mq.subscribe-name}">
 			<anypoint-mq:properties ><![CDATA[#[output application/java
----
-{
-	"objectName" : "job"
-}]]]></anypoint-mq:properties>
+ --- 
+ { 
+ 	"correlationId" : "7cc64d24-f2ad-4d43-8893-fa24a0789a99", 
+ 	"operationType" : "addList",
+ 	"apiName" : "fin-netsuite-finance-ent-sapi", 
+ 	"apiVersion" : "v1.0", 
+	"objectName" : "salesOrder",
+ 	"queueName" : p('secure::mq.subscribe-name')
+}]]]></anypoint-mq:properties> 
 		</anypoint-mq:publish>
 	</flow>
 	<flow name="fin-netsuite-migration-sapiFlow" doc:id="c16a61cc-36e0-4f6c-b2ad-813a81dff4e4" >
@@ -22,11 +27,11 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 		<logger level="INFO" doc:name="Print Message" doc:id="d4ae9d8a-2571-4bba-9978-7f806e849a16" message="#[attributes.properties]"/>
 		<set-variable value="#[attributes.properties]" doc:name="inputProperties" doc:id="89a1d61d-17ea-4d7a-905b-67f1080f7f0d" variableName="inputProperties"/>
 		<logger level="INFO" doc:name="Logger" doc:id="1f211968-afdb-468b-a6ab-936af0fcb098" message="@@@@@@Inbound request received at Main@@@@@@@@@@@@" />
-		<flow-ref doc:name="NS-Integration-projectSetup" doc:id="73b2fca2-82d1-4053-a3b7-ad175f5a2fbd" name="netsuite-integration-projectSetup-flowSub_Flow" />
+		<flow-ref doc:name="salesorder-insert-Implementation" doc:id="73b2fca2-82d1-4053-a3b7-ad175f5a2fbd" name="VendorBillingScheduleLine-Implementation" />
 	</flow>
-	<flow name="fin-netsuite-migration-sapi-status" doc:id="c4d127f2-0844-43d1-b2bb-2f8ba09323c2" >
-		<anypoint-mq:subscriber doc:name="Subscriber" doc:id="932ddef0-08a8-48b2-b5f2-33803342ef3a" config-ref="Anypoint_MQ_Config" destination="project-setup-status-queue" />
-		<logger level="INFO" doc:name="Logger" doc:id="9287db84-42e5-4893-ae03-d1f01c0c2bbd" message="@@@@@@Inbound request received at Main for SYNC BACK@@@@@@@@@@@@" />
-		<flow-ref doc:name="NS-Integration-projectSetup" doc:id="881c65f9-526d-455c-b4e1-3d16ea904f8f" name="job-syncback-implementation" />
-	</flow>
+<!-- 	<flow name="fin-netsuite-migration-sapi-status" doc:id="c4d127f2-0844-43d1-b2bb-2f8ba09323c2" > -->
+<!-- 		<anypoint-mq:subscriber doc:name="Subscriber" doc:id="932ddef0-08a8-48b2-b5f2-33803342ef3a" config-ref="Anypoint_MQ_Config" destination="project-setup-status-queue" /> -->
+<!-- 		<logger level="INFO" doc:name="Logger" doc:id="9287db84-42e5-4893-ae03-d1f01c0c2bbd" message="@@@@@@Inbound request received at Main for SYNC BACK@@@@@@@@@@@@" /> -->
+<!-- 		<flow-ref doc:name="NS-Integration-projectSetup" doc:id="881c65f9-526d-455c-b4e1-3d16ea904f8f" name="ProjectTask-Implementation" /> -->
+<!-- 	</flow> -->
 </mule>

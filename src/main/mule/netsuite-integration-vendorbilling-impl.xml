@@ -13,7 +13,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<sub-flow
 		name="VendorBillingScheduleLine-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
-		<set-variable value="#[payload.vendorbillingscheduleLine]" doc:name="vendorBillSchLinePayload"
+		<set-variable value="#[payload.nsVendorBillingLinePayload]" doc:name="vendorBillSchLinePayload"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="vendorBillSchLinePayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -83,29 +83,29 @@ ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
 		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns21": "urn:inventory_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns20": "urn:bank_2020_1.transactions.webservices.netsuite.com"): {
-				ns24#record @("xsi:type": "ns13:CustomRecord","externalId": vars.vendorBillSchLinePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+				ns24#record @("xsi:type": "ns13:CustomRecord","externalId": vars.vendorBillSchLinePayload[0].id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
 					// customFieldList: {
 					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
 					// value: p('invoice.creditBody')
 					// }
 					// },
 					ns13#name: vars.vendorBillSchLinePayload.name,
-					ns13#recType @("internalId": vars.vendorBillSchLinePayload.nsProjectInternalId): "",
+					ns13#recType @("internalId": 450): "",
 					ns13#customFieldList: {
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_bsch"): {
-							value @("internalId": vars.vendorBillSchLinePayload.nsVendorBillingScheduleInternalId): ""
+							value @("internalId": vars.vendorBillSchLinePayload[0].nsVendorBillingScheduleInternalId): ""
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custrecord_vd_bs_line_project"): {
-							value @("internalId": vars.vendorBillSchLinePayload.nsProjectInternalId): ""
+							value : vars.vendorBillSchLinePayload[0].nsProjectInternalId
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_milestone"): {
-							value @("internalId": vars.vendorBillSchLinePayload.nsProjectMilestoneInternalId): ""
+							value @("internalId": vars.vendorBillSchLinePayload[0].nsProjectMilestoneInternalId): ""
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custrecord_vd_bs_trigger"): {
-							value @("internalId": vars.vendorBillSchLinePayload.vendorBSchTriggerInternalId): ""
+							value @("internalId": vars.vendorBillSchLinePayload[0].vendorBSchTriggerInternalId): ""
 						},
 						customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custrecord_vd_bs_amount"): {
-							value: vars.vendorBillSchLinePayload.amount
+							value: vars.vendorBillSchLinePayload[0].amount
 						},
 						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custrecord_exported_from_sfdc_vbs_line"): {
 							value: "true"
@@ -241,19 +241,31 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
+				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
 			</otherwise>
 		</choice>
-	
+		
+	  <anypoint-mq:publish doc:name="Publish" doc:id="ac16caa7-6793-403c-9a8c-cb4324f1dde7" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "vendorBillingScheduleLine",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+		</anypoint-mq:publish>
 	</sub-flow>
 	
 	<sub-flow
 		name="vendorBilling-Implementation"
 		doc:id="bfac821c-99f1-43f9-aa52-6793ea6155fe">
-		<set-variable value="#[payload.vendorbilling]" doc:name="vendorBillPayload"
+		<set-variable value="#[payload.nsVendorBillingSchedule[0]]" doc:name="vendorBillPayload"
 			doc:id="0415d97d-16c7-4399-9f37-344d0daaefbc"
 			variableName="vendorBillPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -277,6 +289,7 @@ ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns3 urn:messages.platform.webservices.netsuite.com
 ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
 
 
 ---
@@ -335,13 +348,13 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 					//},
 					
 				ns13#name: vars.vendorBillPayload.name  ,
-                ns13#recType @("internalId":vars.vendorBillPayload.nsProjectInternalId ) : "" ,				
+                ns13#recType @("internalId":449 ) : "" ,				
 			
                 ns13#customFieldList:{
                 	
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exported_from_sfdc_vbs"):{ value  : "false"},
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exported_from_sfdc_vbs"):{ value  : "true"},
                         
-                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_synced_to_sfdc_vbs"):{ value : "true" }
+                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_synced_to_sfdc_vbs"):{ value : "false" }
 }
 
 }
@@ -456,27 +469,39 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="16551028-48ac-4237-8cc5-ec8aec32270e" >
 			<when expression="#[vars.isSuccess.message == 'true']">
-				<flow-ref doc:name="job_rest_call_" doc:id="b9d26d96-e0e9-4cf7-bfa9-73fb7c18f645" name="job_rest_call_" />
 				<ee:transform doc:name="Transform Message" doc:id="2b7dc72e-d8ee-4cc0-82b6-f5a4288d10ba" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
-{
+{ vendorBillingSchedule:{
 	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
-	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
-}]]></ee:set-payload>
+	syncedToNS: true
+	//nsCustomProjectNo : vars.restRsp.entityId
+}}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
+				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
 			</otherwise>
 		</choice>
+			
+		<anypoint-mq:publish doc:name="Publish" doc:id="cc1a7060-1b88-4c04-a2ef-61d226e816ea" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "vendorBillingSchedule",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+		</anypoint-mq:publish>
 	
 	</sub-flow>
 	<sub-flow name="vendorBilling-syncback-implementation" doc:id="ce09fb9f-f285-46a1-9d3f-cd4a745b59ea" >

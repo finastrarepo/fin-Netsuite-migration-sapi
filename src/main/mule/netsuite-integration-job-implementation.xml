@@ -394,9 +394,9 @@ errorType: "BusinessError",
 interfaceName: "nsProjectSetup",
 sourceName: "Salesforce",
 targetName: "Netsuite",
-apiName: "fin-netsuite-migration-sapi",
+apiName: "fin-netsuite-finance-ent-sapi",
 apiVersion: "v1.0",
-correlationId: vars.inputProperties.properties.correlationId,
+correlationId: vars.inputProperties.correlationId,
 resourcePath: "",
 httpMethod: ""
 }]]></ee:set-variable>
@@ -412,14 +412,12 @@ httpMethod: ""
 			<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
-	"Key-2" : "Value",
-	"Key" : "Value",
-	"Key-1" : "Value",
-	"Key-4" : "Value",
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
 	"objectName" : "job",
-	"Key-3" : "Value",
-	"Key-6" : "Value",
-	"Key-5" : "Value"
+	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
 		</anypoint-mq:publish>
 	
@@ -551,7 +549,7 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 					//},
                 ns6#customFieldList:{
                 	
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custentity_syncedtosfdc"):{ value : vars.jobSyncPayload.syncToSfdc }
+                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custentity_syncedtosfdc"):{ value : vars.jobSyncPayload.salesforceUpdate }
                         
 }
 

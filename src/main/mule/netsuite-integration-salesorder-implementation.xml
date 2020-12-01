@@ -132,214 +132,180 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
-				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderPayload.salesOrder18CharacterId , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+				ns24#record @("xsi:type": "ns9:SalesOrder","externalId": vars.salesOrderPayload.salesOrder[0].salesOrder18CharacterId , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
 					// customFieldList: {
 					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
 					// value: p('invoice.creditBody')
 					// }
 					// },
-					ns9#customForm @("internalId": vars.salesOrderPayload.nsFormId): "",
-					ns9#entity @("internalId": vars.salesOrderPayload.billToCustomerInternalId): "",
-					ns9#currency @("internalId": vars.salesOrderPayload.nsCurrencyInternalId): "",
-					ns9#drAccount @("internalId": vars.salesOrderPayload.nsDeferredRevRecAccInternalId): "",
-					ns9#tranDate: vars.salesOrderPayload.orderDate ++ "T00:00:00.000",
-					ns9#orderStatus @("internalId": vars.salesOrderPayload.orderStatusCode): "",
-					ns9#startDate @("internalId": vars.salesOrderPayload.orderStartDate): "",
-					ns9#endDate @("internalId": vars.salesOrderPayload.orderEndDate): "",
-					ns9#otherRefNum @("internalId": vars.salesOrderPayload.customerPONumber): "",
-					ns9#memo @("internalId": vars.salesOrderPayload.memo): "",
-					ns9#fax @("internalId": vars.salesOrderPayload.nsFaxNumber): "",
-					ns9#email @("internalId": vars.salesOrderPayload.nsBillToEmail): "",
-					ns9#billAddressList @("internalId": vars.salesOrderPayload.nsBillingAddressInternalId): "",
-					ns9#shipAddressList @("internalId": vars.salesOrderPayload.nsTaxationAddressInternalId): "",
-					ns9#revRecOnRevCommitment @("internalId": vars.salesOrderPayload.nsRevRecOnCommit): "",
-					ns9#class @("internalId": vars.salesOrderPayload.nsProductAnalysisInternalId): "",
-					ns9#department @("internalId": vars.salesOrderPayload.nsCostCentreInternalId): "",
-					ns9#location @("internalId": vars.salesOrderPayload.nsFinanceRegionInternalId): "",
-					ns9#terms @("internalId": vars.salesOrderPayload.nsTermInternalId): "",
-					ns9#tranIsVsoeBundle @("internalId": vars.salesOrderPayload.transactionIsVSOEBundle): "",
-					ns9#vsoeAutoCalc @("internalId": vars.salesOrderPayload.nsAutoCalculateVSOEAllocation): "",
-					ns9#itemList: {
-						item  @("internalId": vars.salesOrderPayload.nsItemInternalId): "",
-						quantity: vars.salesOrderPayload.quantity,
-						description: vars.salesOrderPayload.description,
-						rate: vars.salesOrderPayload.rate,
-						department: vars.salesOrderPayload.psCostCentreInternalId,
-						revRecSchedule  @("internalId": vars.salesOrderPayload.revRecScheduleInternalId): "",
-						revRecStartDate: vars.salesOrderPayload.revRecStartDate,
-						revRecEndDate: vars.salesOrderPayload.revRecStartDate,
-						line: vars.salesOrderPayload.line,
-						vsoePrice: vars.salesOrderPayload.vsoePrice,
-						vsoeAllocation: vars.salesOrderPayload.vsoeAllocationAmount,
-						vsoeDelivered: vars.salesOrderPayload.vsoeDelivered,
-						ns9#customFieldList: vars.salesOrderPayload.salesOrderItem map(item,value) -> {
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_rev_rec_rule"): {
-								value: item.openairRevRecRuleInternalId
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_billing_rule_type"): {
-								value : item.openairBillingRuleInternalId
+					ns9#customForm @("internalId": vars.salesOrderPayload.salesOrder[0].nsFormId): "",
+					ns9#entity @("internalId": vars.salesOrderPayload.salesOrder[0].billToCustomerInternalId): "",
+					ns9#currency @("internalId": vars.salesOrderPayload.salesOrder[0].nsCurrencyInternalId): "",
+					ns9#drAccount @("internalId": vars.salesOrderPayload.salesOrder[0].nsDeferredRevRecAccInternalId): "",
+					ns9#tranDate: if ( vars.salesOrderPayload.salesOrder[0].orderDate !=null ) (vars.salesOrderPayload.salesOrder[0].orderDate ++ "T00:00:00.000Z") else "",
+					ns9#orderStatus @("internalId": vars.salesOrderPayload.salesOrder[0].orderStatusCode): "",
+					ns9#startDate: if ( vars.salesOrderPayload.salesOrder[0].orderStartDate != null ) (vars.salesOrderPayload.salesOrder[0].orderStartDate ++ "T00:00:00.000Z") else "",
+					ns9#endDate: if ( vars.salesOrderPayload.salesOrder[0].orderEndDate !=null ) (vars.salesOrderPayload.salesOrder[0].orderEndDate ++ "T00:00:00.000Z") else "",
+					ns9#otherRefNum: vars.salesOrderPayload.salesOrder[0].customerPONumber,
+					ns9#memo: vars.salesOrderPayload.salesOrder[0].memo,
+					ns9#fax: vars.salesOrderPayload.salesOrder[0].nsFaxNumber,
+					ns9#email: vars.salesOrderPayload.salesOrder[0].nsBillToEmail,
+					ns9#billAddressList @("internalId": vars.salesOrderPayload.salesOrder[0].nsBillingAddressInternalId): "",
+					ns9#shipAddressList @("internalId": vars.salesOrderPayload.salesOrder[0].nsTaxationAddressInternalId): "",
+					ns9#revRecOnRevCommitment: vars.salesOrderPayload.salesOrder[0].nsRevRecOnCommit,
+					ns9#class @("internalId": vars.salesOrderPayload.salesOrder[0].nsProductAnalysisInternalId): "",
+					ns9#department @("internalId": vars.salesOrderPayload.salesOrder[0].nsCostCentreInternalId): "",
+					ns9#location @("internalId": vars.salesOrderPayload.salesOrder[0].nsFinanceRegionInternalId): "",
+					ns9#terms @("internalId": vars.salesOrderPayload.salesOrder[0].nsTermInternalId): "",
+					ns9#tranIsVsoeBundle: vars.salesOrderPayload.salesOrder[0].transactionIsVSOEBundle,
+					ns9#vsoeAutoCalc: vars.salesOrderPayload.salesOrder[0].nsAutoCalculateVSOEAllocation,
+					ns9#itemList: vars.salesOrderPayload.salesOrderItem map(item,value) -> {
+						ns9#item: {
+							ns9#item  @("internalId": item.nsItemInternalId): "",
+							ns9#quantity: item.quantity,
+							ns9#description: item.description,
+							ns9#rate: item.rate,
+							ns9#department: item.psCostCentreInternalId,
+							ns9#revRecSchedule  @("internalId": item.revRecScheduleInternalId): "",
+							ns9#revRecStartDate: if ( item.revRecStartDate != null ) (item.revRecStartDate ++ "T00:00:00.000Z") else null,
+							ns9#revRecEndDate: if ( item.revRecStartDate != null ) (item.revRecStartDate ++ "T00:00:00.000Z") else null,
+							ns9#line: item.line,
+							ns9#vsoePrice: item.vsoePrice,
+							ns9#vsoeAllocation: item.vsoeAllocationAmount,
+							ns9#vsoeDelivered: item.vsoeDelivered,
+							ns9#customFieldList: {
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_rev_rec_rule"): {
+									value: item.openairRevRecRuleInternalId
 								},
-								
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
-								value: item.softwareDelivered
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
-								value : item.nonGA
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_3pp_rate"): {
-								value: item.thirdpartyCostsPOCcy
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_rate_currency"): {
-								value @("internalId": item.thirdPartyPOCurrencyInternalId ):""
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_mis_ps_carveout_amt"): {
-								value: item.fairValueAdjustment
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misysvaluelist"): {
-								value @("internalId": item.listValue) : ""
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysdiscount"): {
-								value : item.discount
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysrevenuecontracted"): {
-								value @("internalId": item.salesPrice): ""
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysvaluefair"): {
-								value : item.fairValue
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_internalcost"): {
-								value: item.internalCosts
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdcontractorcost"): {
-								value: item.thirdPartyContractorCostdealccy
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdpartycost"): {
-								value: item.thirdPartyCostsdealcurrency
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostrecvalue"): {
-								value: item.reimbursableCostsRecoveryValue
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostestimate"): {
-								value: item.reimbursableCostsEstimate
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluelist"): {
-								value: item.perDiemListValue
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluecont"): {
-								value: item.perDiemContractedValue
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysunrecoverablecost"): {
-								value: item.unrecoverableCosts
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonserviceincldcarveout"): {
-								value: item.profitonServicesincCarveOut
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonservice"): {
-								value: item.profitonService
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyschargeablehours"): {
-								value: item.totalChargeableHours
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyscontractorhours"): {
-								value: item.totalNumberOfContractorHours
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysnonbillablehours"): {
-								value: item.totalNumberOfNonBillableHours
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misystravelhour"): {
-								value: item.totalNumberOfTravelHours
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_vendor_billing_schedule_3pp"): {
-								value: item.nsVendorBillingScheduleInternalId
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_location"): {
-								value: item.location
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_vendor_bsch_trigger"): {
-								value: item.vendorBSchTriggerInternalId
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalhours"): {
-								value: item.totalHours
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalbillablehours"): {
-								value: item.totalBillableHours
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_totalcost"): {
-								value: item.totalCost
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_create_3pp_po"): {
-								value @("internalId" : item.create3PPEvent ):""
-								
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_licence_basis"): {
-								value: item.licenseMetric
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_environ"): {
-								value: item.environment
-
-							},
-							customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_license_band_quantity"): {
-								value: item.licenceband
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
-								value: item.fairValue
-
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
-								value: item.softwareDelivered
-
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
-								value: item.revRecEndDate
-
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
-								value: item.revRecStartDate
-
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
-								value: item.revRecScheduleInternalId
-
-
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_vsoeallocation"): {
-								value: item.fairValue
-
-
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_us_tax_type_code"): {
-								value: item.taxCode
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_oa_billing_rule_type"): {
+									value: item.openairBillingRuleInternalId
+								},
+								customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
+									value: item.softwareDelivered
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
+									value: item.nonGA
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_3pp_rate"): {
+									value: item.thirdpartyCostsPOCcy
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_rate_currency"): {
+									value @("internalId": item.thirdPartyPOCurrencyInternalId): ""
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_mis_ps_carveout_amt"): {
+									value: item.fairValueAdjustment
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misysvaluelist"): {
+									value @("internalId": item.listValue): ""
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysdiscount"): {
+									value: item.discount
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysrevenuecontracted"): {
+									value: item.salesPrice
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysvaluefair"): {
+									value: item.fairValue
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_internalcost"): {
+									value: item.internalCosts
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdcontractorcost"): {
+									value: item.thirdPartyContractorCostdealccy
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misys3rdpartycost"): {
+									value: item.thirdPartyCostsdealcurrency
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostrecvalue"): {
+									value: item.reimbursableCostsRecoveryValue
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysrembursablecostestimate"): {
+									value: item.reimbursableCostsEstimate
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluelist"): {
+									value @("internalId": item.perDiemListValue): ""
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misystotalperdiemvaluecont"): {
+									value: item.perDiemContractedValue
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_misysunrecoverablecost"): {
+									value: item.unrecoverableCosts
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonserviceincldcarveout"): {
+									value: item.profitonServicesincCarveOut
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_profitonservice"): {
+									value: item.profitonService
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyschargeablehours"): {
+									value: item.totalChargeableHours
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misyscontractorhours"): {
+									value: item.totalNumberOfContractorHours
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misysnonbillablehours"): {
+									value: item.totalNumberOfNonBillableHours
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_misystravelhour"): {
+									value: item.totalNumberOfTravelHours
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_vendor_billing_schedule_3pp"): {
+									valu @("internalId": item.nsVendorBillingScheduleInternalId): ""
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_location"): {
+									value: item.location
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_3pp_vendor_bsch_trigger"): {
+									value @("internalId": item.vendorBSchTriggerInternalId): ""
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalhours"): {
+									value: item.totalHours
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_totalbillablehours"): {
+									value: item.totalBillableHours
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_totalcost"): {
+									value: item.totalCost
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_create_3pp_po"): {
+									value @("internalId": item.create3PPEvent): ""
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_licence_basis"): {
+									value: item.licenseMetric
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_environ"): {
+									value: item.environment
+								},
+								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_license_band_quantity"): {
+									value: item.licenceband
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
+									value @("internalId": item.fairValue): ""
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
+									value: item.softwareDelivered
+								},
+								customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
+									value: if ( item.revRecEndDate != null ) (item.revRecEndDate ++ "T00:00:00.000Z") else ""
+								},
+								customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
+									value: if ( item.revRecStartDate != null ) (item.revRecStartDate ++ "T00:00:00.000Z") else ""
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
+									value @("internalId": item.revRecScheduleInternalId): ""
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_vsoeallocation"): {
+									value: item.fairValue
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_us_tax_type_code"): {
+									value @("internalId": item.taxCode): ""
+								}
 							}
 						}
 					},
 					ns9#customFieldList: {
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_delivery_address"): {
-							value: vars.salesOrderPayload.altDeliveryAddress
+							value: vars.salesOrderPayload.salesOrder[0].altDeliveryAddress
 						},
 						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_exportedfromsfdc"): {
 							value: "true"
@@ -348,69 +314,56 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 							value: "false"
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_transactioncategory"): {
-							value @("internalId": vars.salesOrderPayload.orderTypeInternalId ):""
+							value @("internalId": vars.salesOrderPayload.salesOrder[0].orderTypeInternalId): ""
 						},
 						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_porequired"): {
-							value: vars.salesOrderPayload.poRequired
+							value: vars.salesOrderPayload.salesOrder[0].poRequired
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misysref"): {
-							value: vars.salesOrderPayload.opportunityNumber
-
+							value: vars.salesOrderPayload.salesOrder[0].opportunityNumber
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_invoice_credit_body"): {
-							value @( "internalId" : vars.salesOrderPayload.invoiceCreditBodyInternalId) : ""
-
+							value @("internalId": vars.salesOrderPayload.salesOrder[0].invoiceCreditBodyInternalId): ""
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbodycustbody_creditcontroller"): {
-							value @( "internalId" :  vars.salesOrderPayload.soCreditControllerInternalId): ""
+							value @("internalId": vars.salesOrderPayload.salesOrder[0].soCreditControllerInternalId): ""
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_contractno"): {
-							value: vars.salesOrderPayload.contractNumber
-													},
+							value: vars.salesOrderPayload.salesOrder[0].contractNumber
+						},
 						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbodycustbody_cashaccounting"): {
-							value: vars.salesOrderPayload.nsCashAccounting
-
+							value: vars.salesOrderPayload.salesOrder[0].nsCashAccounting
 						},
 						customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custbody_billing_contact"): {
-							value: vars.salesOrderPayload.nsBillingContactInternalId
-
+							value @("internalId": vars.salesOrderPayload.salesOrder[0].nsBillingContactInternalId): ""
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_docmemo"): {
-							value: vars.salesOrderPayload.documentMemo
-
+							value: vars.salesOrderPayload.salesOrder[0].documentMemo
 						},
 						customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custbody_contractdate"): {
-							value: vars.salesOrderPayload.nsContractDate
+							value: if ( vars.salesOrderPayload.salesOrder[0].nsContractDate !=null ) (vars.salesOrderPayload.salesOrder[0].nsContractDate ++ "T00:00:00.000Z") else ""
 						},
-						
 						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_mys_tax_combo_chck"): {
-							value: vars.salesOrderPayload.taxComboCheck
-
+							value: vars.salesOrderPayload.salesOrder[0].taxComboCheck
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_sfdc_billing_group_id"): {
-							value: vars.salesOrderPayload.billingGroup
-
+							value: vars.salesOrderPayload.salesOrder[0].billingGroup
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_ps_practice_name"): {
-							value: vars.salesOrderPayload.psPractiseNameInternalId
-
+							value: vars.salesOrderPayload.salesOrder[0].psPractiseNameInternalId
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_ps_practice_unique_code"): {
-							value: vars.salesOrderPayload.psPractiseUniqueCode
-
+							value: vars.salesOrderPayload.salesOrder[0].psPractiseUniqueCode
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misyssalestype_str"): {
-							value: vars.salesOrderPayload.opportunityDealType
-
+							value: vars.salesOrderPayload.salesOrder[0].opportunityDealType
 						},
 						customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_legacy_ref"): {
-							value: vars.salesOrderPayload.opportunityNumberText
-
+							value: vars.salesOrderPayload.salesOrder[0].opportunityNumberText
 						},
-						//customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misyssalestype_str"): {
-						//	value: vars.salesOrderPayload.opportunityDealType
-
-						//}
+					// customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custbody_misyssalestype_str"): {
+					// value: vars.salesOrderPayload.salesOrder[0].opportunityDealType
+					// }
 					}
 				}
 			}
@@ -555,14 +508,19 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
-				<anypoint-mq:publish doc:name="Publish" doc:id="6cdfdeee-f932-49bb-8853-6e8eeefb0b3f" config-ref="Anypoint_MQ_Config" destination="project-setup-rsp-queue">
-					<anypoint-mq:properties ><![CDATA[#[output application/java
+				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
+				<anypoint-mq:publish doc:name="Publish" doc:id="21d73937-60e4-49f3-9bc0-4886867e1f24" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
-	"objectName" : "salesOrder"
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "salesOrder",
+	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
-				</anypoint-mq:publish>
+		</anypoint-mq:publish>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
@@ -584,10 +542,11 @@ output application/json
 	</sub-flow>
 	<sub-flow name="salesorder_update_impl" doc:id="eadc5b59-d711-4a8e-8e29-95ea66b0eb5e" >
 		<set-variable value="#[(salesOrder: payload.salesOrder) ++ (salesOrderItem: payload.salesOrderItem)]" doc:name="salesOrderUpdatePayload" doc:id="31143223-882a-41b6-8403-ec051a318886" variableName="salesOrderUpdatePayload" mimeType="application/json" />
+		<logger level="INFO" doc:name="Print salesOrderUpdatePayload" doc:id="612dbd84-dc3b-4a35-948f-20d7a1916bd9" message="#[vars.salesOrderUpdatePayload]"/>
 		<flow-ref doc:name="oauth-header-generator-soapHeader" doc:id="ad02da92-3764-42b9-88cf-72d2352ae1ca" name="oauth-header-generator-soapHeader" />
 		<logger level="INFO" doc:name="Logger" doc:id="5a93ea75-f89f-4eec-bab4-88dd214728bc" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
 		<choice doc:name="Choice" doc:id="b8744b40-9d57-49a8-8d34-fd22c23990e1" >
-			<when expression="#[vars.salesOrderUpdatePayload.primarySales == 'true']">
+			<when expression="#[vars.salesOrderUpdatePayload.salesOrder[0].primarySalesCheck == 'true']">
 				<ee:transform doc:name="sOPrimaryrequestPayload" doc:id="4345171d-9091-40b6-918d-d4a08fd201ae">
 			<ee:message>
 				<ee:set-payload><![CDATA[%dw 2.0
@@ -699,21 +658,21 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
-				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderUpdatePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+				ns24#record @("xsi:type": "ns9:SalesOrder","externalId": vars.salesOrderUpdatePayload.salesOrder[0].id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
 					
 						ns9#customFieldList: 
 						{
 							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "employee"): {
-								value  @("internalId": vars.salesOrderUpdatePayload.primarySalesPersonInternalId ) : ""
+								value  @("internalId": vars.salesOrderUpdatePayload.salesOrder[0].primarySalesPersonInternalId ) : ""
 							},
 							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "salesrole"): {
-								value @("internalId": vars.salesOrderUpdatePayload.salesRoleInternalId): ""
+								value @("internalId": vars.salesOrderUpdatePayload.salesOrder[0].salesRoleInternalId): ""
 							},
 							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "isprimary"): {
-								value: vars.salesOrderUpdatePayload.isPrimary
+								value: vars.salesOrderUpdatePayload.salesOrder[0].isPrimary
 							},
 							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "contribution"): {
-								value : vars.salesOrderUpdatePayload.contribution
+								value : vars.salesOrderUpdatePayload.salesOrder[0].contribution
 							}
 						}
 					
@@ -817,7 +776,7 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 			}
 		},
 		soap#Body: {
-			ns24#upsertList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
+			ns24#updateList @("xmlns:ns5": "urn:filecabinet_2020_1.documents.webservices.netsuite.com" ,
 		"xmlns:ns6": "urn:relationships_2020_1.lists.webservices.netsuite.com" ,
 		"xmlns:ns3": "urn:common_2020_1.platform.webservices.netsuite.com" ,
 		"xmlns:ns4": "urn:communication_2020_1.general.webservices.netsuite.com" ,
@@ -840,60 +799,62 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 		"xmlns:ns10": "urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns21": "urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns20": "urn:marketing_2020_1.lists.webservices.netsuite.com"): {
-				ns24#record @("xsi:type": "ns6:Job","externalId": vars.salesOrderUpdatePayload.id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
+				ns24#record @("xsi:type": "ns9:SalesOrder","externalId": vars.salesOrderUpdatePayload.salesOrder[0].id , "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance"): {
 					// customFieldList: {
 					// customField @( "xsi:type":"core:StringCustomFieldRef", "scriptId":"custbody_invoice_credit_body" ,"xmlns:core":"urn:core_2020_1.platform.webservices.netsuite.com"): {
 					// value: p('invoice.creditBody')
 					// }
 					// },
-					ns9#itemList: {
-						quantity: vars.salesOrderUpdatePayload.quantity,
-						description: vars.salesOrderUpdatePayload.description,
-						rate: vars.salesOrderUpdatePayload.rate,
-						revRecSchedule  @("internalId": vars.salesOrderUpdatePayload.revRecScheduleInternalId): "",
-						revRecStartDate: vars.salesOrderUpdatePayload.revRecStartDate,
-						revRecEndDate: vars.salesOrderUpdatePayload.revRecStartDate,
-						line: vars.salesOrderUpdatePayload.line,
-						amount: vars.salesOrderUpdatePayload.amount,
-						vsoePrice: vars.salesOrderUpdatePayload.vsoePrice,
-						vsoeAllocation: vars.salesOrderUpdatePayload.vsoeAllocationAmount,
-						vsoeDelivered: vars.salesOrderUpdatePayload.vsoeDelivered,
-						ns9#customFieldList: {
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
-								value: vars.salesOrderUpdatePayload.softwareDelivered
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
-								value: vars.salesOrderUpdatePayload.nonGA
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
-								value: vars.salesOrderUpdatePayload.vsoeAllocationAmount
-							},
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
-								value : vars.salesOrderUpdatePayload.vsoeDelivered
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
-								value: vars.salesOrderUpdatePayload.revRecStartDate
-							},
-							customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
-								value: vars.salesOrderUpdatePayload.revRecEndDate
-							},
-							customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_fair_value"): {
-								value: vars.salesOrderUpdatePayload.vsoeAllocationAmount
-							},
-							customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
-								value @("internalId": vars.salesOrderUpdatePayload.revRecScheduleInternalId): ""
+					ns9#itemList: vars.salesOrderUpdatePayload.salesOrderItem map(item,value) -> {
+						ns9#item: {
+							ns9#quantity: item.quantity,
+							ns9#description: item.description,
+							ns9#rate: item.rate,
+							ns9#revRecSchedule  @("internalId": item.revRecScheduleInternalId): "",
+							ns9#revRecStartDate: if (item.revRecStartDate != null) (item.revRecStartDate ++ "T00:00:00.000Z") else "",
+							ns9#revRecEndDate: if (item.revRecStartDate !=null) (item.revRecStartDate ++ "T00:00:00.000Z") else "",
+							ns9#line: item.line,
+							ns9#amount: item.amount,
+							ns9#vsoePrice: item.vsoePrice,
+							ns9#vsoeAllocation: item.vsoeAllocationAmount,
+							ns9#vsoeDelivered: item.vsoeDelivered,
+							ns9#customFieldList: {
+								customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_softwaredelivered"): {
+									value: item.softwareDelivered
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_ga"): {
+									value: item.nonGA
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
+									value: item.vsoeAllocationAmount
+								},
+								customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
+									value: item.vsoeDelivered
+								},
+								customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_start_date"): {
+									value: if ( item.revRecStartDate != null ) (item.revRecStartDate ++ "T00:00:00.000Z") else null
+								},
+								customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
+									value: if ( item.revRecEndDate != null ) (item.revRecEndDate ++ "T00:00:00.000Z") else null
+								},
+								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_fair_value"): {
+									value: item.vsoeAllocationAmount
+								},
+								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_ra_revrec_sched"): {
+									value @("internalId": item.revRecScheduleInternalId): ""
+								}
 							}
+						}
+					},
+					ns9#customFieldList: {
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_exportedfromsfdc"): {
+							value: "true"
 						},
-						ns9#customFieldList: {
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_exportedfromsfdc"): {
-								value: "true"
-							},
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_syncedtosfdc"): {
-								value: "false"
-							},
-							customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_to_update_lines"): {
-								value: "true"
-							}
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_syncedtosfdc"): {
+							value: "false"
+						},
+						customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custbody_to_update_lines"): {
+							value: "true"
 						}
 					}
 				}
@@ -925,7 +886,7 @@ payload]]></ee:set-variable>
 		</ee:transform>
 		<logger level="INFO" doc:name="Logger - Full payload " doc:id="18b6a88e-c368-4137-8f10-230e0be45bb5" message="#[payload]" />
 		<try doc:name="Try" doc:id="933ea874-bad1-4126-8cb7-cc3f07c72f12" >
-			<wsc:consume operation="${soap.wsdlAddOperation}" doc:name="Invoke-SalesOrder" doc:id="4d643347-0bb3-4e62-82df-040dc50c5429" config-ref="Web_Service_Consumer_Config" target="responsePayload" >
+			<wsc:consume operation="${soap.wsdlUpdateOperation}" doc:name="Invoke-SalesOrder" doc:id="4d643347-0bb3-4e62-82df-040dc50c5429" config-ref="Web_Service_Consumer_Config" target="responsePayload" >
 				<wsc:message >
 					<wsc:body ><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
 					<wsc:headers ><![CDATA[#[vars.soapHeader]]]></wsc:headers>
@@ -947,7 +908,8 @@ output application/json
 						<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
-	objectName : Job
+	"operationType" : "Update",
+	"objectName" : "salesOrder"
 }]]]></anypoint-mq:properties>
 					</anypoint-mq:publish>
 				</on-error-propagate>
@@ -984,7 +946,7 @@ ns ns2 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns3 urn:messages.platform.webservices.netsuite.com
 ns ns4 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
-
+ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 
 ---
 //payload.ns0#Envelope.ns0#Body.add.record.itemList
@@ -1081,7 +1043,7 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 		"xmlns:ns10":"urn:purchases_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns21":"urn:demandplanning_2020_1.transactions.webservices.netsuite.com" ,
 		"xmlns:ns20":"urn:marketing_2020_1.lists.webservices.netsuite.com") : {
-             ns24#record @("xsi:type":"ns6:Job","externalId" : vars.salesOrderSyncPayload.id , "xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance"):{
+             ns24#record @("xsi:type":"ns9:SalesOrder","externalId" : vars.salesOrderSyncPayload.id , "xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance"):{
                              
                 
      //          customFieldList: {
@@ -1089,7 +1051,7 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 			//				value: p('invoice.creditBody')
 				//		}
 					//},
-                ns6#customFieldList:{
+                ns9#customFieldList:{
                 	
                        customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custbody_syncedtosfdc"):{ value : vars.salesOrderSyncPayload.syncToSfdc }
                         

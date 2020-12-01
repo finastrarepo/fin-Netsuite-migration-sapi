@@ -17,7 +17,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<sub-flow
 		name="ProjectTask-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
-		<set-variable value="#[payload.task]" doc:name="taskPayload"
+		<set-variable value="#[payload.nsProjectMilestone[0]]" doc:name="taskPayload"
 			doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="taskPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -111,8 +111,8 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custevent_exportedfromsfdc"):{ value : "true"},
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custevent_syncedtosfdc"):{ value : "false"},
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_dropdeaddate"):{ value : vars.taskPayload.dropDeadDate ++ "T00:00:00.000Z" },
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_estimatedenddate"):{ value : vars.taskPayload.finishNoLaterThanDate ++ "T00:00:00.000Z" }
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_dropdeaddate"):{ value : if (vars.taskPayload.dropDeadDate != null) (vars.taskPayload.dropDeadDate ++ "T00:00:00.000Z")  else null },
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custevent_estimatedenddate"):{ value : if (vars.taskPayload.finishNoLaterThanDate != null) (vars.taskPayload.finishNoLaterThanDate ++ "T00:00:00.000Z") else null }
                                     
 }
 
@@ -173,12 +173,12 @@ payload]]></ee:set-variable>
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
-{
+{task: {
 	netsuiteInternalId
 : (if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null )  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId else (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message)),
 	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
 	syncedToNS: true
-}]]></ee:set-payload>
+}}]]></ee:set-payload>
 			</ee:message>
 			<ee:variables>
 				<ee:set-variable variableName="rsp" ><![CDATA[%dw 2.0
@@ -205,6 +205,18 @@ var failurersp = {
 			</ee:variables>
 		</ee:transform>
 		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[vars.rsp]"/>
+		<anypoint-mq:publish doc:name="Publish" doc:id="99c84f17-4aa6-46c5-b128-73ef177c224c" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties ><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "task",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+		</anypoint-mq:publish>
 	
 	
 
