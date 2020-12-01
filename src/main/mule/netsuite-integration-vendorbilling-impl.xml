@@ -226,19 +226,19 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 		</ee:transform>
 		<choice doc:name="Choice" doc:id="9f0dce93-9754-4edb-b817-e3e3bf3ea175" >
 			<when expression="#[vars.isSuccess.message == 'true']">
-				<flow-ref doc:name="job_rest_call_" doc:id="c4ca41c9-b02d-4605-8756-6a344850cf5e" name="job_rest_call_" />
 				<ee:transform doc:name="Transform Message" doc:id="4e92bc6c-3c64-4b69-9a5d-4e377a727861" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
-{
+{ vendorBillingScheduleLine: {
+	
 	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true,
-	nsCustomProjectNo : vars.restRsp.entityId
-}]]></ee:set-payload>
+	//nsCustomProjectNo : vars.restRsp.entityId
+}}]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
