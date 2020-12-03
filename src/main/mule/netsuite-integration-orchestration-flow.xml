@@ -15,24 +15,21 @@ http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/htt
 http://www.mulesoft.org/schema/mule/netsuite http://www.mulesoft.org/schema/mule/netsuite/current/mule-netsuite.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
-	<sub-flow name="netsuite-integration-projectSetup-flowSub_Flow" doc:id="91c4ee31-1017-48f0-954f-bca7e63dc1e0" >
+	<sub-flow name="netsuite-integration-orchestration-Flow" doc:id="91c4ee31-1017-48f0-954f-bca7e63dc1e0" >
 		<ee:transform doc:name="Transform Message" doc:id="91b89218-6ce9-4e99-96f1-fed8e4eccfbc" >
 			<ee:message >
 				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
+output application/json skipNullOn = "everywhere"
+
 import modules::filterEmptyObjects
 
 ---
 filterEmptyObjects::filterEmptyObjects(payload)]]></ee:set-payload>
 			</ee:message>
 			<ee:variables >
-				<ee:set-variable variableName="t" ><![CDATA[%dw 2.0
-output application/java
----
-{Incomingrequest : "        "} ++ payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger" doc:id="84b24689-f8ec-429b-8cb2-bbfa2c8db6a9" message='#[{Incomingrequest : "        "} ++ payload]'/>
+		<logger level="INFO" doc:name="Logger" doc:id="84b24689-f8ec-429b-8cb2-bbfa2c8db6a9" message='#[payload]'/>
 		<choice doc:name="Choice" doc:id="90b9eeb5-13d0-404d-90e6-4b6c4bf9f1ab" >
 			<when expression="#[(!(isEmpty(payload.nsProject)))]">
 				<logger level="INFO" doc:name="Setup call" doc:id="f86bcc3b-1b6d-401a-a3b6-3bdea939e76b" message="****Project Setup call*****"/>
@@ -44,9 +41,9 @@ output application/java
 			</when>
 			<when expression="#[(!(isEmpty(payload.salesOrder)))]">
 				<choice doc:name="Choice" doc:id="57cb3bab-d33b-465c-ad54-11e4b8b7bb72" >
-					<when expression="#[payload.salesOrder.primarysales == 'true']">
+					<when expression="#[vars.inputProperties.operationType == 'Insert']">
 						<logger level="INFO" doc:name="SalesOrder Insert " doc:id="9c4f767d-23ac-40d9-8a81-9f9c7f1ce322" message="****Project SalesOrder Insert*****" />
-						<flow-ref doc:name="Flow Reference" doc:id="d6a0d693-92cc-4cab-9b52-79e773e1ff40" name="salesOrder_rest_call_" />
+						<flow-ref doc:name="salesorder-insert-Implementation" doc:id="d6a0d693-92cc-4cab-9b52-79e773e1ff40" name="salesorder-insert-Implementation" />
 					</when>
 					<otherwise >
 						<logger level="INFO" doc:name="SalesOrder Update " doc:id="34a2234e-9280-42fd-920b-c83d70d4c43e" message="****Project SalesOrder Update*****"/>

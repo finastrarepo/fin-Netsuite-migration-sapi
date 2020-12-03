@@ -160,7 +160,51 @@ payload]]></ee:set-variable>
 				<on-error-propagate enableNotifications="true"
 					logException="true" doc:name="On Error Propagate"
 					doc:id="d2018621-38fc-44fd-8fcd-69d866e475f9" type="ANY">
-					<logger level="INFO" doc:name="Logger" doc:id="49ce87a1-e28d-4170-8369-4eece807d1ac" message="#[error.description]"/>
+										<logger level="INFO" doc:name="Logger" doc:id="098b1ba5-5223-493b-8332-15ad97f8ec73" message="#[error.description]"/>
+					<ee:transform doc:name="Transform Message" doc:id="fe700247-dba1-4b09-802d-1feee4e13532" >
+						<ee:message >
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingScheduleLine : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingScheduleLine",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<anypoint-mq:publish doc:name="Publish_to_ErrorQueue" doc:id="19d34b96-92c5-4af2-a091-ecb224c1f685" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue">
+						<anypoint-mq:properties><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "task",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+					</anypoint-mq:publish>
 				</on-error-propagate>
 			</error-handler>
 		</try>
@@ -242,14 +286,8 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="82ab799b-5f51-4f05-b6c3-e8b2f1422280" message="#[payload]" />
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
-			</otherwise>
-		</choice>
-		
-	  <anypoint-mq:publish doc:name="Publish" doc:id="ac16caa7-6793-403c-9a8c-cb4324f1dde7" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
-			<anypoint-mq:properties ><![CDATA[#[output application/java
+				<anypoint-mq:publish doc:name="Publish" doc:id="ac16caa7-6793-403c-9a8c-cb4324f1dde7" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties><![CDATA[#[output application/java
 ---
 {
 	"correlationId" : vars.inputProperties.correlationId,
@@ -260,6 +298,46 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
 		</anypoint-mq:publish>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="fa5bc670-fe65-44e8-ba9a-93b15f0a5df2" >
+					<ee:message >
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingScheduleLine : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingScheduleLine",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<async doc:name="Async" doc:id="28a22426-7827-4858-921a-7d7045181740" >
+			<flow-ref doc:name="log-payload" doc:id="38c41165-4bea-4e28-9ecc-0c2b996926c6" name="log-payload"/>
+		</async>
 	</sub-flow>
 	
 	<sub-flow
@@ -404,6 +482,39 @@ payload]]></ee:set-variable>
 					logException="true" doc:name="On Error Propagate"
 					doc:id="30595559-2932-444f-bff9-b353e308ffa4" type="ANY">
 					<logger level="INFO" doc:name="Logger" doc:id="99bf88f4-a6a2-465a-aa5b-39a5a9d707c9" message="#[error.description]"/>
+					<ee:transform doc:name="Transform Message" doc:id="c31ba31c-4a00-42c3-b1aa-0534c0a17ee9" >
+						<ee:message >
+						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingSchedule : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+						</ee:variables>
+					</ee:transform>
+					<anypoint-mq:publish doc:name="Publish_to_ErrorQueue" doc:id="c8a2df3c-a719-4170-a6de-19053127be02" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue"/>
 				</on-error-propagate>
 			</error-handler>
 		</try>
@@ -484,14 +595,8 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger- BEFORE MQ" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
-			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
-			</otherwise>
-		</choice>
-			
-		<anypoint-mq:publish doc:name="Publish" doc:id="cc1a7060-1b88-4c04-a2ef-61d226e816ea" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
-			<anypoint-mq:properties ><![CDATA[#[output application/java
+				<anypoint-mq:publish doc:name="Publish" doc:id="cc1a7060-1b88-4c04-a2ef-61d226e816ea" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+			<anypoint-mq:properties><![CDATA[#[output application/java
 ---
 {
 	"correlationId" : vars.inputProperties.correlationId,
@@ -502,6 +607,44 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
 		</anypoint-mq:publish>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
+				<ee:transform doc:name="Transform Message" doc:id="d71241a8-afd6-47cd-a753-1358e48e1345" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingSchedule : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+			</otherwise>
+		</choice>
+		<async doc:name="Async" doc:id="053b8dd5-6543-4425-8d37-7c4de0464999" >
+			<flow-ref doc:name="log-payload" doc:id="eb1fec56-577f-485e-a261-902c1b759bcd" name="log-payload"/>
+		</async>
 	
 	</sub-flow>
 	<sub-flow name="vendorBilling-syncback-implementation" doc:id="ce09fb9f-f285-46a1-9d3f-cd4a745b59ea" >
@@ -675,13 +818,33 @@ payload]]></ee:set-variable>
 						<ee:message >
 							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingSchedule : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//errormessage
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<anypoint-mq:publish doc:name="Publish" doc:id="cee4d9fb-3d8a-41f5-9b02-aa5bac515d1d" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
+					<anypoint-mq:publish doc:name="Publish_to_ErrorQueues" doc:id="cee4d9fb-3d8a-41f5-9b02-aa5bac515d1d" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
 						<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
@@ -739,10 +902,29 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingSchedule : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//error message
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="dbb1a46b-42e5-4a1d-80fb-76c250381130" />
@@ -921,13 +1103,33 @@ payload]]></ee:set-variable>
 						<ee:message >
 							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingScheduleLine : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//errormessage
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingScheduleLine",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<anypoint-mq:publish doc:name="Publish" doc:id="d4150bc0-b3d5-4948-b2f9-88a2a9ded2fe" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
+					<anypoint-mq:publish doc:name="Publish_to_ErrorQueue" doc:id="d4150bc0-b3d5-4948-b2f9-88a2a9ded2fe" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
 						<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
@@ -985,10 +1187,29 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	vendorBillingScheduleLine : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//error message
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingScheduleLine",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="6c38f7a0-11e5-489d-9003-ab851c3b3636" />

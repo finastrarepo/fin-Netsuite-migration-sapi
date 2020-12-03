@@ -1,29 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
-	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
+<mule
+	xmlns:anypoint-mq="http://www.mulesoft.org/schema/mule/anypoint-mq"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc"
 	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
-	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
 http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd
 http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
 http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/mule/anypoint-mq/current/mule-anypoint-mq.xsd">
-	
-	
-		
-	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="e1aeb3b3-19af-4564-8b6e-ae62adfabaa3">
-		<http:request-connection protocol="HTTPS"/>
+
+
+
+	<http:request-config
+		name="HTTP_Request_configuration"
+		doc:name="HTTP Request configuration"
+		doc:id="e1aeb3b3-19af-4564-8b6e-ae62adfabaa3">
+		<http:request-connection protocol="HTTPS" />
 	</http:request-config>
-	<sub-flow
-		name="ProjectTask-Implementation"
+	<sub-flow name="ProjectTask-Implementation"
 		doc:id="130840c3-4a62-41bb-84c8-3f2e6ab613e8">
-		<set-variable value="#[payload.nsProjectMilestone[0]]" doc:name="taskPayload"
-			doc:id="92057468-7a08-4207-9e4a-9819585af689"
+		<set-variable value="#[payload.nsProjectMilestone[0]]"
+			doc:name="taskPayload" doc:id="92057468-7a08-4207-9e4a-9819585af689"
 			variableName="taskPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
 			doc:id="abad57fd-6b31-46b4-8c80-f1017260fb84"
 			name="oauth-header-generator-soapHeader" />
-		<logger level="INFO" doc:name="Logger" doc:id="62196025-e7a8-49eb-b063-e6588a2840bd" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" message="#[vars.oAuthHeaderFinal]"/>
+		<logger level="INFO" doc:name="Logger"
+			doc:id="62196025-e7a8-49eb-b063-e6588a2840bd"
+			category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@"
+			message="#[vars.oAuthHeaderFinal]" />
 		<ee:transform doc:name="requestPayload"
 			doc:id="931d7eb3-7f83-4f23-b468-2dabbabaf448">
 			<ee:message>
@@ -147,13 +157,13 @@ payload]]></ee:set-variable>
 		<logger level="INFO" doc:name="Logger - Full payload "
 			doc:id="24019308-cfb6-46bc-be0b-1b949ae89fb3" message="#[payload]" />
 		<try doc:name="Try" doc:id="125c3065-673f-449e-9d26-603eff400b77">
-			
-	
+
+
 			<wsc:consume doc:name="Invoke-ProjectTask"
 				doc:id="10313adb-0e20-4e8f-a4fc-e5fa46d62620"
 				config-ref="Web_Service_Consumer_Config"
 				operation="${soap.wsdlUpsertOperation}" target="responsePayload">
-			<wsc:message>
+				<wsc:message>
 					<wsc:body><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
 					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
 				</wsc:message>
@@ -161,52 +171,47 @@ payload]]></ee:set-variable>
 			<error-handler>
 				<on-error-propagate enableNotifications="true"
 					logException="true" doc:name="On Error Propagate"
-					doc:id="d2018621-38fc-44fd-8fcd-69d866e475f9" type="ANY">
-					<logger level="INFO" doc:name="Logger" doc:id="49ce87a1-e28d-4170-8369-4eece807d1ac" message="#[error.description]"/>
-				</on-error-propagate>
-			</error-handler>
-		</try>
-		<logger level="INFO" doc:name="Logger" doc:id="9eb092eb-b4fc-41a2-819a-53029e1a4ab2" message="#[vars.responsePayload]"/>
-		<ee:transform doc:name="netsuiteInternalId" doc:id="f75daec6-617f-4382-bb9b-179ec6a73a22">
-			<ee:message>
-				<ee:set-payload><![CDATA[%dw 2.0
+					doc:id="0c83b12b-48bc-443e-a034-01e791dd9c28" type="ANY">
+					<logger level="INFO" doc:name="Logger"
+						doc:id="dce1635f-fa2c-4ca7-9b3e-6b21dadad558"
+						message="#[error.description]" />
+					<ee:transform doc:name="Transform Message"
+						doc:id="40c62cd1-b3a7-4d76-9fd8-c0cd5846f142">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
-ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
----
-{task: {
-	netsuiteInternalId
-: (if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null )  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId else (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message)),
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-	syncedToNS: true
-}}]]></ee:set-payload>
-			</ee:message>
-			<ee:variables>
-				<ee:set-variable variableName="rsp" ><![CDATA[%dw 2.0
-output application/json 
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 
-var successrsp = {
-	netsuiteInternalId : vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId,
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-	syncedToNS : true
-}
-
 var failurersp = {
-	netsuiteInternalId: null,
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ,
-	errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
-	syncedToNS: false
+	task : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
 }
 ---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsProjectMilestone",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
 
-	 if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null) successrsp else failurersp 
-]]></ee:set-variable>
-			</ee:variables>
-		</ee:transform>
-		<logger level="INFO" doc:name="netsuiteInternalId" doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[vars.rsp]"/>
-		<anypoint-mq:publish doc:name="Publish" doc:id="99c84f17-4aa6-46c5-b128-73ef177c224c" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
-			<anypoint-mq:properties ><![CDATA[#[output application/java
+}]]]></ee:set-payload>
+						</ee:message>
+					</ee:transform>
+					<anypoint-mq:publish
+						doc:name="Publish_to_ErrorQueue"
+						doc:id="7bdd0a26-aa99-4004-8703-0ae1656be009"
+						config-ref="Anypoint_MQ_Config"
+						destination="project-setup-DL-queue">
+						<anypoint-mq:properties><![CDATA[#[output application/java
 ---
 {
 	"correlationId" : vars.inputProperties.correlationId,
@@ -216,20 +221,197 @@ var failurersp = {
 	"objectName" : "task",
 	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
-		</anypoint-mq:publish>
+					</anypoint-mq:publish>
+				</on-error-propagate>
+			</error-handler>
+		</try>
+		<logger level="INFO" doc:name="Logger"
+			doc:id="9eb092eb-b4fc-41a2-819a-53029e1a4ab2"
+			message="#[vars.responsePayload]" />
+		<ee:transform doc:name="netsuiteInternalId"
+			doc:id="f75daec6-617f-4382-bb9b-179ec6a73a22">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+---
+{
+	task: {
+		netsuiteInternalId: (if ( vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null ) vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId else (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message)),
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		syncedToNS: true
+	}
+}]]></ee:set-payload>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="rsp"><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+var successrsp = {
+	task: {
+		netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId,
+		recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		syncedToNS: true
+	}
+}
+var failurersp = {
+	task: {
+		netsuiteInternalId: null,
+		recordID: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+if ( vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null ) successrsp else failurersp 
+]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
+		<logger level="INFO" doc:name="netsuiteInternalId-Logger"
+			doc:id="60b2e736-54da-4d04-a1a9-24eb3eb08001" message="#[vars.rsp]" />
+		<logger level="INFO" doc:name="Logger for error code"
+			doc:id="ebc90d0c-70d7-4d39-9865-4c90f64fc0ee"
+			message="#[%dw 2.0
+output application/json
+---
+{
+       (code: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code) if (vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.code != null)
+       
+}]" />
+		<logger level="INFO" doc:name="Logger"
+			doc:id="e42e9dde-e352-4826-b516-2a53bae31ccf"
+			message='#[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]' />
+		<ee:transform doc:name=" Error"
+			doc:id="a59c1832-e67b-44e1-af23-52ec17d17b79">
+			<ee:message>
+			</ee:message>
+			<ee:variables>
+				<ee:set-variable variableName="isSuccess"><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
 	
+	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
+}]]></ee:set-variable>
+				<ee:set-variable variableName="businessError"><![CDATA[%dw 2.0
+output application/json 
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+---
+{
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
 	
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+}]]></ee:set-variable>
+			</ee:variables>
+		</ee:transform>
 
-		
-	
+
+		<choice doc:name="Choice"
+			doc:id="78e741ac-935a-478e-8699-7d990d982ed4">
+			<when expression="#[vars.isSuccess.message == 'true']">
+				<anypoint-mq:publish
+					doc:name="Publish_to_ResponseQueue"
+					doc:id="99c84f17-4aa6-46c5-b128-73ef177c224c"
+					config-ref="Anypoint_MQ_Config"
+					destination="${secure::mq.publish-name}">
+					<anypoint-mq:properties><![CDATA[#[output application/java
+---
+{
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "task",
+	"queueName" : p('secure::mq.publish-name')
+}]]]></anypoint-mq:properties>
+				</anypoint-mq:publish>
+				<async doc:name="Async"
+					doc:id="9147d10d-d4c2-4b9a-a33d-8bb4dd0afe54">
+					<flow-ref doc:name="log-payload"
+						doc:id="497fc717-c1f3-453f-adae-1bfff72bfcab" name="log-payload" />
+				</async>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="Logger"
+					doc:id="09019dbe-3f1d-4fba-9cee-65dc1363fb86" message="#[payload]" />
+				<ee:transform doc:name="Transform Message"
+					doc:id="497a3498-0587-4539-a1d8-07f6968f221c">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="logData"><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	task : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsProjectMilestone",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+				<async doc:name="Async"
+					doc:id="5136be40-9236-4b5e-b9c2-1aaf90127321">
+					<flow-ref doc:name="log-error-message"
+						doc:id="2758bbc2-3e18-4eb7-9798-927f0e9202c9"
+						name="log-error-message" />
+				</async>
+
+
+			</otherwise>
+		</choice>
+
+
+
+
+
 	</sub-flow>
-	<sub-flow name="projectTask-syncback-implementation" doc:id="dbad9b1c-b469-4efe-bbd3-e633e5f9c527" >
-		<set-variable value="#[payload.nsProjectMilestone]" doc:name="projectTaskSyncPayload" doc:id="b430d96b-f5e0-45ae-8671-13569c015903" variableName="projectTaskSyncPayload" mimeType="application/json" />
-		<flow-ref doc:name="oauth-header-generator-soapHeader" doc:id="fb3bc1dc-b935-4411-a508-9e49d35e3b2b" name="oauth-header-generator-soapHeader" />
-		<logger level="INFO" doc:name="Logger" doc:id="f45a7054-cb7d-48cd-ac7d-1c6e14ecdacb" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
-		<ee:transform doc:name="requestPayload" doc:id="9c9a45c7-7e8a-464a-b5d0-97b7f6f770c1" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
+	<sub-flow name="projectTask-syncback-implementation"
+		doc:id="dbad9b1c-b469-4efe-bbd3-e633e5f9c527">
+		<set-variable value="#[payload.nsProjectMilestone]"
+			doc:name="projectTaskSyncPayload"
+			doc:id="b430d96b-f5e0-45ae-8671-13569c015903"
+			variableName="projectTaskSyncPayload" mimeType="application/json" />
+		<flow-ref doc:name="oauth-header-generator-soapHeader"
+			doc:id="fb3bc1dc-b935-4411-a508-9e49d35e3b2b"
+			name="oauth-header-generator-soapHeader" />
+		<logger level="INFO" doc:name="Logger"
+			doc:id="f45a7054-cb7d-48cd-ac7d-1c6e14ecdacb"
+			message="#[vars.oAuthHeaderFinal]"
+			category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
+		<ee:transform doc:name="requestPayload"
+			doc:id="9c9a45c7-7e8a-464a-b5d0-97b7f6f770c1">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
 output application/xml
 ns soap http://schemas.xmlsoap.org/soap/envelope/
 ns soapEnc http://schemas.xmlsoap.org/soap/encoding/
@@ -361,10 +543,11 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<ee:transform doc:name="payloadXML" doc:id="bdae77ab-8903-4c2a-942c-48022f1228b6" >
+		<ee:transform doc:name="payloadXML"
+			doc:id="bdae77ab-8903-4c2a-942c-48022f1228b6">
 			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="soapHeader" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="soapHeader"><![CDATA[%dw 2.0
 output application/xml
 ns soap http://schemas.xmlsoap.org/soap/envelope/
 ---
@@ -373,48 +556,89 @@ headers: payload.Envelope.Header
 
 
 }]]></ee:set-variable>
-				<ee:set-variable variableName="targetPayload" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="targetPayload"><![CDATA[%dw 2.0
 output application/xml
 ---
 payload]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<logger level="INFO" doc:name="Logger - Full payload " doc:id="1ad88f24-7d85-4580-8bb9-4f2cfb4f5597" message="#[payload]" />
-		<try doc:name="Try" doc:id="6b667573-1452-4d70-93bf-343afc0fb6c5" >
-			<wsc:consume operation="${soap.wsdlUpdateOperation}" doc:name="Invoke-ProjectTask" doc:id="3bbb3f6b-967f-4be6-9b75-48bba36e98a5" config-ref="Web_Service_Consumer_Config" target="responsePayload" >
-				<wsc:message >
-					<wsc:body ><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
-					<wsc:headers ><![CDATA[#[vars.soapHeader]]]></wsc:headers>
+		<logger level="INFO" doc:name="Logger - Full payload "
+			doc:id="1ad88f24-7d85-4580-8bb9-4f2cfb4f5597" message="#[payload]" />
+		<try doc:name="Try" doc:id="6b667573-1452-4d70-93bf-343afc0fb6c5">
+			<wsc:consume operation="${soap.wsdlUpdateOperation}"
+				doc:name="Invoke-ProjectTask"
+				doc:id="3bbb3f6b-967f-4be6-9b75-48bba36e98a5"
+				config-ref="Web_Service_Consumer_Config" target="responsePayload">
+				<wsc:message>
+					<wsc:body><![CDATA[#[payload.Envelope.Body]]]></wsc:body>
+					<wsc:headers><![CDATA[#[vars.soapHeader]]]></wsc:headers>
 				</wsc:message>
 			</wsc:consume>
-			<error-handler >
-				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="e67cc5cb-cd4c-4750-a45d-d5db727f84fe" type="ANY" >
-					<logger level="INFO" doc:name="Logger" doc:id="59db4312-3321-4b37-8439-85a1832b5a2e" message="#[error.description]" />
-					<ee:transform doc:name="Transform Message" doc:id="7d66a2b3-ccf6-494d-b14f-559333821eec" >
-						<ee:message >
-							<ee:set-payload ><![CDATA[%dw 2.0
+			<error-handler>
+				<on-error-propagate enableNotifications="true"
+					logException="true" doc:name="On Error Propagate"
+					doc:id="e67cc5cb-cd4c-4750-a45d-d5db727f84fe" type="ANY">
+					<logger level="INFO" doc:name="Logger"
+						doc:id="59db4312-3321-4b37-8439-85a1832b5a2e"
+						message="#[error.description]" />
+					<ee:transform doc:name="Transform Message"
+						doc:id="183cb71d-8405-4dfa-a187-2f991d611fba">
+						<ee:message>
+							<ee:set-payload><![CDATA[%dw 2.0
 output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	task : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//errormessage
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsProjectMilestone",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
-					<anypoint-mq:publish doc:name="Publish" doc:id="bc0b2010-f28a-43ab-9aa1-1f03ab174465" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
-						<anypoint-mq:properties ><![CDATA[#[output application/java
+					<anypoint-mq:publish
+						doc:name="Publish_to_ErrorQueue"
+						doc:id="25f7d825-b49f-4cd3-8a40-7712c33de94b"
+						config-ref="Anypoint_MQ_Config"
+						destination="project-setup-DL-queue">
+						<anypoint-mq:properties><![CDATA[#[output application/java
 ---
 {
-	objectName : Job
+	"correlationId" : vars.inputProperties.correlationId,
+	"operationType" : vars.inputProperties.operationType,
+	"apiName" : "fin-netsuite-finance-ent-sapi",
+	"apiVersion" : "v1.0",
+	"objectName" : "task",
+	"queueName" : p('secure::mq.publish-name')
 }]]]></anypoint-mq:properties>
 					</anypoint-mq:publish>
 				</on-error-propagate>
 			</error-handler>
 		</try>
-		<logger level="INFO" doc:name="Logger" doc:id="95a175bc-b71a-43e2-a759-cbf8b459ebaf" message="#[vars.responsePayload]" />
-		<ee:transform doc:name="isSuccess" doc:id="0a7c54f1-f664-4a0a-84f7-42f28c23e9c9" >
+		<logger level="INFO" doc:name="Logger"
+			doc:id="95a175bc-b71a-43e2-a759-cbf8b459ebaf"
+			message="#[vars.responsePayload]" />
+		<ee:transform doc:name="isSuccess"
+			doc:id="0a7c54f1-f664-4a0a-84f7-42f28c23e9c9">
 			<ee:message />
-			<ee:variables >
-				<ee:set-variable variableName="isSuccess" ><![CDATA[%dw 2.0
+			<ee:variables>
+				<ee:set-variable variableName="isSuccess"><![CDATA[%dw 2.0
 output application/json 
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
@@ -423,7 +647,7 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 	
 	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
 }]]></ee:set-variable>
-				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
+				<ee:set-variable variableName="businessError"><![CDATA[%dw 2.0
 output application/json 
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
@@ -435,11 +659,13 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
-		<choice doc:name="Choice" doc:id="718437c3-297f-405f-b7f1-d37f212fce17" >
-			<when expression="#[vars.isSuccess.message == 'true']" >
-				<ee:transform doc:name="Transform Message" doc:id="c5176d40-c05a-4183-b2a1-b37729970867" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+		<choice doc:name="Choice"
+			doc:id="718437c3-297f-405f-b7f1-d37f212fce17">
+			<when expression="#[vars.isSuccess.message == 'true']">
+				<ee:transform doc:name="Transform Message"
+					doc:id="c5176d40-c05a-4183-b2a1-b37729970867">
+					<ee:message>
+						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
@@ -449,27 +675,48 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="e60408e6-e27f-4ce3-844b-c337e179fa0b" message="#[payload]" />
 			</when>
-			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="914da554-71a4-40a1-9711-4744d3caaf57" message="#[payload]" />
-				<ee:transform doc:name="Transform Message" doc:id="c44839ef-38da-490f-8341-028bc8516bb9" >
-					<ee:message >
-						<ee:set-payload ><![CDATA[%dw 2.0
+			<otherwise>
+				<ee:transform doc:name="Transform Message"
+					doc:id="c44839ef-38da-490f-8341-028bc8516bb9">
+					<ee:message>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	task : {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//error message
-}]]></ee:set-payload>
-					</ee:message>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsProjectMilestone",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+					</ee:variables>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="ac4d411a-e89a-48e4-9d1e-3c36b0053858" />
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-after-outbound-request" doc:id="4e444bbb-6229-4492-8ced-416b9ba270db" name="log-after-outbound-request" />
+		<flow-ref doc:name="log-after-outbound-request"
+			doc:id="4e444bbb-6229-4492-8ced-416b9ba270db"
+			name="log-after-outbound-request" />
 	</sub-flow>
-	
-	
-	
-	</mule>
+
+
+
+</mule>
