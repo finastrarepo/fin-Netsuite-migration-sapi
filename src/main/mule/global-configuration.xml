@@ -63,7 +63,10 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 		value="gqikztodczvzrqssbfhvbrupobuznuoy" />
 	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="35abb981-8689-4ede-891c-705d445054f1" file="env\${anypoint_application_environment}_properties.yaml" key="${anypoint_application_encryption_key}" />
 		
-		
+			<sub-flow name="process-error-plugin" doc:id="18b2f227-062c-47c6-bd67-8da117b3bc14" >
+		<error-handler-plugin:on-error doc:name="Process Error" doc:id="0ac8a678-bb67-48f1-9cc3-7c2a3abed4e0" />
+	
+</sub-flow>
 		<error-handler name="global-configError_Handler" doc:id="d4415fd0-638f-4047-a94c-1b4c970a44e6" >
 		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8780eb1c-bf8f-4208-b8e6-0a2bf4065f84">
 			<logger level="INFO" doc:name="Logger to capture error details" doc:id="b13b51da-ff88-4930-a700-f18cd5cac7ca" message="system error... will be moved to system error exchange" category="${secure::log.logError}" />
@@ -109,7 +112,7 @@ output application/json
 				</ee:message>
 			</ee:transform>
 			<logger level="INFO" doc:name="Logger" doc:id="873e3091-e181-47c5-a388-496964c2bd3a" message="Error details publishing to MQ"/>
-			<flow-ref doc:name="log-error-message" doc:id="a2145400-b29c-4909-95cd-b17f1499bd0c" name="log-error-message"/>
+			<flow-ref doc:name="process-error-plugin" doc:id="a2145400-b29c-4909-95cd-b17f1499bd0c" name="process-error-plugin"/>
 		</on-error-propagate>
 	</error-handler>
 	

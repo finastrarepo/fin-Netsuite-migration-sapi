@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<sub-flow
 		name="customerBilling-Implementation"
 		doc:id="bfac821c-99f1-43f9-aa52-6793ea6155fe">
-		<set-variable value="#[payload.customerbilling]" doc:name="customerBillingPayload"
+		<set-variable value="#[payload.nsCustomerBilling[0]]" doc:name="customerBillingPayload"
 			doc:id="0415d97d-16c7-4399-9f37-344d0daaefbc"
 			variableName="customerBillingPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -98,7 +98,7 @@ ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
 			
                 ns13#customFieldList:{
                 	
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_project"):{ value @("internalId" : vars.customerBillingPayload.nsProjectInternalId ) : ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_project"):{ value @("internalId" : vars.customerBillingPayload.projectInternalId ) : ""},
                         
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exportedfromsfdc"):{ value : "true" },
                         
@@ -116,15 +116,15 @@ ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
                         
                         customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneInternalId ) : ""},
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_line_est_completion_date"):{ value : vars.customerBillingPayload.lineEstimatedCompletionDate + "T00:00:00.000Z" },
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_line_est_completion_date"):{ value : if(vars.customerBillingPayload.lineEstimatedCompletionDate != null) (vars.customerBillingPayload.lineEstimatedCompletionDate ++ "T00:00:00.000Z") else "" },
                         
                         customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_comment"):{ value : vars.customerBillingPayload.lineComment },
                         
                         customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_sales_order"):{ value @("internalId" : vars.customerBillingPayload.salesOrderInternalId ) : ""},
                         
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone_sequence"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneSequence ) : ""},
+                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone_sequence"):{ value : vars.customerBillingPayload.lineMilestoneSequence },
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_drop_dead_date"):{ value : vars.customerBillingPayload.lineDropDeadDate + "T00:00:00.000Z"}
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_drop_dead_date"):{ value : if (vars.customerBillingPayload.lineDropDeadDate != null) (vars.customerBillingPayload.lineDropDeadDate ++ "T00:00:00.000Z") else ""}
                                                                        
 }
 

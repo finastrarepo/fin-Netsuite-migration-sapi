@@ -300,12 +300,9 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 		</anypoint-mq:publish>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
 				<ee:transform doc:name="Transform Message" doc:id="fa5bc670-fe65-44e8-ba9a-93b15f0a5df2" >
 					<ee:message >
-					</ee:message>
-					<ee:variables >
-						<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
@@ -330,9 +327,12 @@ var failurersp = {
 	resourcePath: "MQ",
 	httpMethod: "MQ"
 
-}]]]></ee:set-variable>
+}]]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
 					</ee:variables>
 				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]" />
 			</otherwise>
 		</choice>
 		<async doc:name="Async" doc:id="28a22426-7827-4858-921a-7d7045181740" >
@@ -587,7 +587,7 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 { vendorBillingSchedule:{
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true
 	//nsCustomProjectNo : vars.restRsp.entityId
@@ -609,7 +609,6 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 		</anypoint-mq:publish>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]"/>
 				<ee:transform doc:name="Transform Message" doc:id="d71241a8-afd6-47cd-a753-1358e48e1345" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -629,6 +628,7 @@ var failurersp = {
 [{
 	initialPayload: vars.responsePayload,
 	payloadForTarget: failurersp,
+	externalId:payload.externalId,
 	objPrefix: "FEP",
 	interfaceName: "vendorBillingSchedule",
 	sourceName: "Salesforce",
@@ -640,6 +640,7 @@ var failurersp = {
 }]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="9f970f38-2952-4c53-af14-f531a79c8654" message="#[payload]" />
 			</otherwise>
 		</choice>
 		<async doc:name="Async" doc:id="053b8dd5-6543-4425-8d37-7c4de0464999" >
@@ -774,7 +775,7 @@ ns ns5 urn:messages_2020_1.platform.webservices.netsuite.com
 					//},
                 ns6#customFieldList:{
                 	
-                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_synced_to_sfdc_vbs"):{ value : vars.vendorBillingSyncPayload.syncToSfdc }
+                       customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_synced_to_sfdc_vbs"):{ value : vars.vendorBillingSyncPayload.salesforceUpdate }
                         
 }
 
@@ -894,6 +895,36 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="2a3348c2-9269-473d-be06-8366ef9dbe2f" message="#[payload]" />
+				<ee:transform doc:name="Transform Message" doc:id="91bb0a99-c0cb-4e6a-a5c1-0cb10b042bde" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var successmsg = {
+	vendorBillingSchedule : {
+		netsuiteInternalId: payload.internalId,
+		externalId: vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.updateListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: true
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: successmsg,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise >
 				<logger level="INFO" doc:name="Logger" doc:id="66c46862-04b9-4cc8-94af-202f199d2ac3" message="#[payload]" />
@@ -916,6 +947,7 @@ var failurersp = {
 [{
 	initialPayload: vars.responsePayload,
 	payloadForTarget: failurersp,
+	externalId: payload.externalId,
 	objPrefix: "FEP",
 	interfaceName: "vendorBillingSchedule",
 	sourceName: "Salesforce",
@@ -927,10 +959,10 @@ var failurersp = {
 }]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="dbb1a46b-42e5-4a1d-80fb-76c250381130" />
+				<logger level="INFO" doc:name="Logger" doc:id="dbb1a46b-42e5-4a1d-80fb-76c250381130" message="#[payload]"/>
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-after-outbound-request" doc:id="c2dea31b-1e04-41fe-a063-18383f94a7e2" name="log-after-outbound-request" />
+		<flow-ref doc:name="log-payload" doc:id="c2dea31b-1e04-41fe-a063-18383f94a7e2" name="log-payload" />
 	</sub-flow>
 	<sub-flow name="vendorBillingScheduleLine-syncback-implementation" doc:id="bc784468-4974-46ac-af25-a3eab26c7559" >
 		<set-variable value="#[payload.nsVendorBillingLinePayload]" doc:name="vendorBillingSchLineSyncPayload" doc:id="53c3ed2b-efa2-473e-8227-3c171915fd1e" variableName="vendorBillingSchLineSyncPayload" mimeType="application/json" />
@@ -1179,9 +1211,39 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="3329acd1-2c1f-4e1a-bb3d-fd790926f74d" message="#[payload]" />
+				<ee:transform doc:name="Transform Message" doc:id="13c598f2-c86d-40e1-b162-7d5553ff00e3" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var successmsg = {
+	vendorBillingScheduleLine : {
+		netsuiteInternalId: payload.internalId,
+		externalId: vars.responsePayload.body.ns0#updatetListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.updateListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: successmsg,
+	externalId: payload.externalId,
+	objPrefix: "FEP",
+	interfaceName: "vendorBillingScheduleLine",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="23eb2ea4-6795-426e-ab87-dd5f95c72b7b" message="#[payload]" />
 				<ee:transform doc:name="Transform Message" doc:id="83b2925f-3083-429f-ac11-72e9fd6e80a6" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -1201,6 +1263,7 @@ var failurersp = {
 [{
 	initialPayload: vars.responsePayload,
 	payloadForTarget: failurersp,
+	externalId: payload.externalId,
 	objPrefix: "FEP",
 	interfaceName: "vendorBillingScheduleLine",
 	sourceName: "Salesforce",
@@ -1212,10 +1275,10 @@ var failurersp = {
 }]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="6c38f7a0-11e5-489d-9003-ab851c3b3636" />
+				<logger level="INFO" doc:name="Logger" doc:id="6c38f7a0-11e5-489d-9003-ab851c3b3636" message="#[payload]"/>
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-after-outbound-request" doc:id="562fdcd6-b9e4-4366-b924-6e29a46adb21" name="log-after-outbound-request" />
+		<flow-ref doc:name="log-payload" doc:id="562fdcd6-b9e4-4366-b924-6e29a46adb21" name="log-payload" />
 	</sub-flow>
 	
 	</mule>

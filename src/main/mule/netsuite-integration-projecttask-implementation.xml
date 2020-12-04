@@ -675,14 +675,45 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-			</when>
-			<otherwise>
-				<ee:transform doc:name="Transform Message"
-					doc:id="c44839ef-38da-490f-8341-028bc8516bb9">
-					<ee:message>
-					</ee:message>
+				<logger level="INFO" doc:name="Logger" doc:id="25c4a38a-7f1c-40a1-939a-b235989c1277" />
+				<ee:transform doc:name="Transform Message" doc:id="8f85d273-be7a-4a21-8f9b-0e1c7dfa0fe0" >
+					<ee:message />
 					<ee:variables >
 						<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var successmsg = {
+	task : {
+		netsuiteInternalId: payload.internalId,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: true
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: successmsg,
+	objPrefix: "FEP",
+	interfaceName: "nsProjectMilestone",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+					</ee:variables>
+				</ee:transform>
+			</when>
+			<otherwise>
+				<ee:transform doc:name="Transform Message" doc:id="c44839ef-38da-490f-8341-028bc8516bb9">
+					<ee:message>
+					</ee:message>
+					<ee:variables>
+						<ee:set-variable variableName="payload" ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
@@ -690,8 +721,8 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 var failurersp = {
 	task : {
 		netsuiteInternalId: null,
-		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		externalId: vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.status.statusDetail.message,
 		syncedToNS: false
 	}
 }
@@ -710,11 +741,10 @@ var failurersp = {
 }]]]></ee:set-variable>
 					</ee:variables>
 				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="9a47e563-fc6f-4442-90f2-c2769746fe26" message="#[payload]"/>
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-after-outbound-request"
-			doc:id="4e444bbb-6229-4492-8ced-416b9ba270db"
-			name="log-after-outbound-request" />
+		<flow-ref doc:name="log-after-outbound-request" doc:id="4e444bbb-6229-4492-8ced-416b9ba270db" name="log-payload" />
 	</sub-flow>
 
 

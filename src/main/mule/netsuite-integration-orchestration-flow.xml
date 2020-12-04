@@ -68,6 +68,40 @@ filterEmptyObjects::filterEmptyObjects(payload)]]></ee:set-payload>
 			</otherwise>
 		</choice>
 	</sub-flow>
+	<sub-flow name="netsuite-integration-syncBack-orchestration-flow" doc:id="973e7dd0-dc2d-4df0-9566-74092dc7c0f1">
+		<logger level="INFO" doc:name="Logger" doc:id="008e24be-5bf4-46ec-aa4c-5a03ff9d7a38" message='#[payload]'/>
+		<choice doc:name="Choice" doc:id="41edc3ef-21fa-4006-9579-73d568fa3398" >
+			<when expression="#[payload.objectName == 'job']">
+				<logger level="INFO" doc:name="Setup call" doc:id="e6ce042c-82dc-4827-8630-7603cd281c4d" message="****Project Setup call*****"/>
+				<flow-ref doc:name="job-syncback-implementation" doc:id="07ba2e49-c734-40c7-90a1-92ce09283ac2" name="job-syncback-implementation"/>
+			</when>
+			<when expression="#[payload.objectName == 'task']">
+				<logger level="INFO" doc:name="Milestone" doc:id="39cc7f5e-de58-4e36-98ab-28e40ad13fbc" message="****Project Milestone*****"/>
+				<flow-ref doc:name="projectTask-syncback-implementation" doc:id="1610c7d3-0631-4ecc-86c1-e247c4fe246a" name="projectTask-syncback-implementation"/>
+			</when>
+			<when expression="#[payload.objectName == 'salesOrder']">
+				<logger level="INFO" doc:name="SalesOrder" doc:id="68de7bf5-b0fa-4536-b6e9-26519197e2f1" message="****Project SalesOrder *****" />
+				<flow-ref doc:name="salesOrder-syncback-implementation" doc:id="f538fa80-01ff-4263-a44d-074a6d17c96b" name="salesOrder-syncback-implementation" />
+			</when>
+			<when expression="#[payload.objectName == 'customerBillingSchedule']">
+				<logger level="INFO" doc:name="CustomerBilling" doc:id="5b47582d-febc-412e-b9af-0b089c5db3ec" message="****Project CustomerBilling*****"/>
+				<flow-ref doc:name="customerBilling-syncback-implementation" doc:id="d00e30bb-86e1-48b4-baa7-911806f786a0" name="customerBilling-syncback-implementation"/>
+			</when>
+			<when expression="#[payload.objectName == 'vendorBillingSchedule']">
+				<logger level="INFO" doc:name="VendorBilling" doc:id="c081f572-be3f-49a9-b252-94be18609d6a" message="****Project VendorBilling*****"/>
+				<flow-ref doc:name="vendorBilling-syncback-implementation" doc:id="7236b97c-5f65-4dff-8e84-6d3dba94d01c" name="vendorBilling-syncback-implementation"/>
+			</when>
+			<when expression="#[payload.objectName == 'vendorBillingScheduleLine']">
+				<logger level="INFO" doc:name="****Project VendorBillingScheduleLine*****" doc:id="e296511d-ed42-4986-8e9e-b66d4d23cf80" message="****Project VendorBillingScheduleLine*****"/>
+				<flow-ref doc:name="vendorBillingScheduleLine-syncback-implementation" doc:id="d087ce71-2a8e-476c-9b77-daf35fbc81cb" name="vendorBillingScheduleLine-syncback-implementation"/>
+			</when>
+			<otherwise>
+				<logger level="INFO" doc:name="NO ACTION " doc:id="02966af3-5b89-4bbb-ac4d-823c658796ee" message="NO ACTION "/>
+			</otherwise>
+		</choice>
+	
+	
+	</sub-flow>
 	
 	<!--  
 	<sub-flow name="netsuite-integration-invoice-salesOrderDetails" doc:id="ad4cbca9-4c18-4c40-ad54-45529c3dcc34" >

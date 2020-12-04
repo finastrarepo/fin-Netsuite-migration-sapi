@@ -143,7 +143,7 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 					ns9#currency @("internalId": vars.salesOrderPayload.salesOrder[0].nsCurrencyInternalId): "",
 					ns9#drAccount @("internalId": vars.salesOrderPayload.salesOrder[0].nsDeferredRevRecAccInternalId): "",
 					ns9#tranDate: if ( vars.salesOrderPayload.salesOrder[0].orderDate !=null ) (vars.salesOrderPayload.salesOrder[0].orderDate ++ "T00:00:00.000Z") else "",
-					ns9#orderStatus @("internalId": vars.salesOrderPayload.salesOrder[0].orderStatusCode): "",
+					ns9#orderStatus : vars.salesOrderPayload.salesOrder[0].orderStatusCode,
 					ns9#startDate: if ( vars.salesOrderPayload.salesOrder[0].orderStartDate != null ) (vars.salesOrderPayload.salesOrder[0].orderStartDate ++ "T00:00:00.000Z") else "",
 					ns9#endDate: if ( vars.salesOrderPayload.salesOrder[0].orderEndDate !=null ) (vars.salesOrderPayload.salesOrder[0].orderEndDate ++ "T00:00:00.000Z") else "",
 					ns9#otherRefNum: vars.salesOrderPayload.salesOrder[0].customerPONumber,
@@ -250,7 +250,7 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 									value: item.totalNumberOfTravelHours
 								},
 								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_vendor_billing_schedule_3pp"): {
-									valu @("internalId": item.nsVendorBillingScheduleInternalId): ""
+									value @("internalId": item.nsVendorBillingScheduleInternalId): ""
 								},
 								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_3pp_asset_location"): {
 									value: item.location
@@ -267,8 +267,8 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 								customField  @("xsi:type": "DoubleCustomFieldRef", "scriptId": "custcol_totalcost"): {
 									value: item.totalCost
 								},
-								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_create_3pp_po"): {
-									value @("internalId": item.create3PPEvent): ""
+								customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_create_3pp_po"): {
+									value: item.create3PPEvent
 								},
 								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_licence_basis"): {
 									value: item.licenseMetric
@@ -282,7 +282,7 @@ ns ns9 urn:sales_2020_1.transactions.webservices.netsuite.com
 								customField  @("xsi:type": "SelectCustomFieldRef", "scriptId": "custcol_arm_fair_value2"): {
 									value @("internalId": item.fairValue): ""
 								},
-								customField  @("xsi:type": "StringCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
+								customField  @("xsi:type": "BooleanCustomFieldRef", "scriptId": "custcol_arm_vsoedelivered"): {
 									value: item.softwareDelivered
 								},
 								customField  @("xsi:type": "DateCustomFieldRef", "scriptId": "custcol_arm_end_date"): {
@@ -420,8 +420,8 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 var failurersp = {
 	salesOrder : {
 		netsuiteInternalId: null,
-		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		externalId: vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.addListResponse.writeResponseList.writeResponse.status.statusDetail.message,
 		syncedToNS: false
 	}
 }
@@ -463,8 +463,8 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	externalId: vars.responsePayload.body.ns0#addListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	netsuiteInternalId: vars.responsePayload.body.ns0#addListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true
 }]]></ee:set-payload>
 			</ee:message>
@@ -500,7 +500,7 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 ---
 {
 	
-	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
+	message :  vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.status.@isSuccess
 }]]></ee:set-variable>
 				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
 output application/json 
@@ -508,9 +508,9 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 ---
 {
-	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
 	
-	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -526,8 +526,8 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 {
 	salesOrder:
 	{
-	externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
-	internalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	externalId: vars.responsePayload.body.ns0#addListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	internalId: vars.responsePayload.body.ns0#addListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true,
 	tranId : vars.restRsp.tranId,
 	exchangeRate: vars.restRsp.exchangeRate
@@ -549,7 +549,6 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 		</anypoint-mq:publish>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="b39a020c-737f-4272-9157-d02ab347c2dd" message="#[payload]"/>
 				<ee:transform doc:name="Transform Message" doc:id="d9c31860-901a-44d6-95a5-7b8ecef530cb" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -560,8 +559,8 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 var failurersp = {
 	salesOrder : {
 		netsuiteInternalId: null,
-		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		externalId: vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.ns0#addListResponse.writeResponseList.writeResponse.status.statusDetail.message,
 		syncedToNS: false
 	}
 }
@@ -569,6 +568,7 @@ var failurersp = {
 [{
 	initialPayload: vars.responsePayload,
 	payloadForTarget: failurersp,
+	externalId: payload.externalId,
 	objPrefix: "FEP",
 	interfaceName: "salesOrder",
 	sourceName: "Salesforce",
@@ -580,10 +580,10 @@ var failurersp = {
 }]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="0d82028a-f207-488f-bb7c-e40daaac2c97" />
+				<logger level="INFO" doc:name="Logger" doc:id="0d82028a-f207-488f-bb7c-e40daaac2c97" message="#[payload]"/>
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-payload" doc:id="a74b11f5-1da6-47ef-b9fd-30411f6ae926" name="log-payload"/>
+		<flow-ref doc:name="log-payload" doc:id="a74b11f5-1da6-47ef-b9fd-30411f6ae926" name="log-payload" />
 	
 	</sub-flow>
 	<sub-flow name="salesorder_update_impl" doc:id="eadc5b59-d711-4a8e-8e29-95ea66b0eb5e" >
@@ -1253,7 +1253,7 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 ---
 {
 	
-	message :  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess
+	message :  vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.status.@isSuccess
 }]]></ee:set-variable>
 				<ee:set-variable variableName="businessError" ><![CDATA[%dw 2.0
 output application/json 
@@ -1261,9 +1261,9 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 ---
 {
-	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
+	(message : "Task for external Id " ++ vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId ++ " is " ++ vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@internalId) if(vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@internalId != null), 
 	
-	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
+	(message : "Task creation failed for external id  " ++  vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId  ++ " with reason: " ++ vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.status.statusDetail.message) if (vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.status.@isSuccess ~= false)
 }]]></ee:set-variable>
 			</ee:variables>
 		</ee:transform>
@@ -1276,15 +1276,46 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	internalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
+	internalId: vars.responsePayload.body.ns0#updateListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true
 }]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="60fc33a3-6747-4343-adf2-1d9880d0d122" message="#[payload]" />
+				<ee:transform doc:name="Transform Message" doc:id="c8f81e1e-3b90-4148-a1f8-183520943490" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var successmsg = {
+	salesOrder : {
+		netsuiteInternalId: payload.internalId,
+		externalId: vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.updateListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: true
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: successmsg,
+	externalId: payload.externalId,
+	objPrefix: "FEP",
+	interfaceName: "salesOrder",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="Logger" doc:id="5d5eac81-cbfd-41d7-879d-28c4504fac0b" message="#[payload]"/>
 			</when>
 			<otherwise >
-				<logger level="INFO" doc:name="Logger" doc:id="abb65f45-7767-4a9c-ab2c-bf5c99227389" message="#[payload]" />
 				<ee:transform doc:name="Transform Message" doc:id="47c32a2e-4af1-4b74-9691-7198bca57187" >
 					<ee:message >
 						<ee:set-payload ><![CDATA[%dw 2.0
@@ -1295,8 +1326,8 @@ ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
 var failurersp = {
 	salesOrder : {
 		netsuiteInternalId: null,
-		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
-		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		externalId: vars.responsePayload.body.ns0#updateListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.updateListResponse.writeResponseList.writeResponse.status.statusDetail.message,
 		syncedToNS: false
 	}
 }
@@ -1315,10 +1346,10 @@ var failurersp = {
 }]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<logger level="INFO" doc:name="Logger" doc:id="699700d6-1f3e-40f7-9ddb-5d7ca9eaa616" />
+				<logger level="INFO" doc:name="Logger" doc:id="abb65f45-7767-4a9c-ab2c-bf5c99227389" message="#[payload]" />
 			</otherwise>
 		</choice>
-		<flow-ref doc:name="log-after-outbound-request" doc:id="fcfa98eb-634f-4afa-abc3-cc6001728f2c" name="log-after-outbound-request" />
+		<flow-ref doc:name="log-payload" doc:id="fcfa98eb-634f-4afa-abc3-cc6001728f2c" name="log-payload" />
 	</sub-flow>
 	
 	
