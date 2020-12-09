@@ -389,7 +389,6 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 {
 	job:
 	{
-	recordId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true,
@@ -454,7 +453,6 @@ var failurersp = {
 	
 	</sub-flow>
 	<sub-flow name="job-syncback-implementation" doc:id="ae7330d4-873a-423a-abdb-f2f7b84d0526" >
-		<logger level="INFO" doc:name="Logger" doc:id="49e0c7af-bd75-4041-b2bb-12f67e5c4ba4" message="#[payload]"/>
 		<set-variable value="#[payload.job]" doc:name="jobSyncPayload" doc:id="ae7a85ae-1410-43a8-b242-c8f29cba6f40" variableName="jobSyncPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader" doc:id="a99c1ff1-3866-40d6-883c-1ce00248aee4" name="oauth-header-generator-soapHeader" />
 		<logger level="INFO" doc:name="Logger" doc:id="1278bbb5-d108-4dcf-a56c-29ddc6b63af3" message="#[vars.oAuthHeaderFinal]" category="@@@@@@@@OAuth Header Value@@@@@@@@@@@@" />
