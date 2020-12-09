@@ -61,8 +61,60 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 		doc:id="8611af96-b8e8-4ad3-b122-5cbd054feb99"
 		name="anypoint_application_encryption_key"
 		value="gqikztodczvzrqssbfhvbrupobuznuoy" />
-	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="35abb981-8689-4ede-891c-705d445054f1" file="env\${anypoint_application_environment}_properties.yaml" key="${anypoint_application_encryption_key}" />
+	<secure-properties:config name="Secure_Properties_Config" doc:name="Secure Properties Config" doc:id="35abb981-8689-4ede-891c-705d445054f1" file="env/${anypoint_application_environment}_properties.yaml" key="${anypoint_application_encryption_key}" />
 		
+			<sub-flow name="process-error-plugin" doc:id="18b2f227-062c-47c6-bd67-8da117b3bc14" >
+		<error-handler-plugin:on-error doc:name="Process Error" doc:id="0ac8a678-bb67-48f1-9cc3-7c2a3abed4e0" />
+	
+</sub-flow>
+		<error-handler name="global-configError_Handler" doc:id="d4415fd0-638f-4047-a94c-1b4c970a44e6" >
+		<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="8780eb1c-bf8f-4208-b8e6-0a2bf4065f84">
+			<logger level="INFO" doc:name="Logger to capture error details" doc:id="b13b51da-ff88-4930-a700-f18cd5cac7ca" message="system error... will be moved to system error exchange" category="${secure::log.logError}" />
+			<ee:transform doc:name="Transform Message" doc:id="e6bd59cc-2900-4191-8e5d-22c35ce2502f" >
+				<ee:message >
+				</ee:message>
+				<ee:variables >
+					<ee:set-variable variableName="errorLogData" ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	errorType: 'System_Error',
+	errorMessage: 'Failed due to error, sending to Exchange'
+}]]></ee:set-variable>
+				</ee:variables>
+			</ee:transform>
+			<ee:transform doc:name="Transform Message" doc:id="100b8588-933b-4fc8-992b-6f6ed26d4536">
+				<ee:message>
+					<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+[{
+	"initialPayload": vars.logData.initialPayload,
+	"payloadForTarget":  write(vars.logData.payloadForTarget) as String,
+	"isSuccess":  if (error.detailedDescription != null) 0 else  1,
+	"responseMsgFromTarget": if(vars.logData.responseMsgFromTarget != null) vars.logData.responseMsgFromTarget else "Error",
+	"isError": if (error.detailedDescription != null) 1 else  0,
+	"errorMsgFromTarget": error.detailedDescription default null, //with until sucessfull
+	"txnDate": now() as String {format: "YYYYMMdd"},
+	"txnDateTime":  now(),
+	"externalId": vars.logData.externalId,
+	"objPrefix": vars.logData.objPrefix,
+	"errorType": (error.errorType.namespace ++ ":" ++ error.errorType.identifier) default 'SystemError',
+	"interfaceName": vars.logData.interfaceName,
+	"sourceName": vars.logData.sourceName,
+	"targetName": vars.logData.targetName,
+	"apiName": p('secure::api.name'),
+	"apiVersion": p('secure::api.version'),
+	"correlationId": vars.logData.correlationId,
+	"resourcePath": vars.logData.resourcePath,
+	"httpMethod": vars.logData.httpMethod
+}]]]></ee:set-payload>
+				</ee:message>
+			</ee:transform>
+			<logger level="INFO" doc:name="Logger" doc:id="873e3091-e181-47c5-a388-496964c2bd3a" message="Error details publishing to MQ"/>
+			<flow-ref doc:name="process-error-plugin" doc:id="a2145400-b29c-4909-95cd-b17f1499bd0c" name="process-error-plugin"/>
+		</on-error-propagate>
+	</error-handler>
 	
 	<sub-flow name="job_rest_call_" doc:id="2bf1b774-7894-4464-b952-5826fbc0dcf3" >
               

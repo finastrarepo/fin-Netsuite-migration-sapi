@@ -10,6 +10,7 @@ mq:
   clientSecret: "8ab62F760E2e4C1d8F4A4Bf59a765ab8"
   url: "https://mq-eu-west-2.anypoint.mulesoft.com/api/v1"
   status-qname: "project-setup-status-queue"
+  
 
 ## http request configuration
 httpRequest:
@@ -29,6 +30,12 @@ keyStore: "00D3L0000008jll.jks"
 consumerKey: "![OwAiDCwg5d90hP2cV8DLjZnJxt7+t69vwWayhhDMV3iASRyrpHvv2bz7KRuDAvy6xgZYTBB2uLNaSWfSm82rRZDWf55yDKNjvQfHFa5g5i91iyeeikOyMr+x0qHwlK5i]"
 
 realm: "3431250_SB99"
+
+### Netsuite Maasking 
+
+mask_keys: "accountName|2|5,addressee|2|5,externalId|2|5,firstName|2|5,phone|2|5,email|2|5"
+mask.keys.time.to.live: "-1"
+ 
 
 #####Netsuite Invoice Values for SOAP request
 soap:

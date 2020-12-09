@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/anypoint-mq http://www.mulesoft.org/schema/m
 	<sub-flow
 		name="customerBilling-Implementation"
 		doc:id="bfac821c-99f1-43f9-aa52-6793ea6155fe">
-		<set-variable value="#[payload.customerbilling]" doc:name="customerBillingPayload"
+		<set-variable value="#[payload.nsCustomerBilling[0]]" doc:name="customerBillingPayload"
 			doc:id="0415d97d-16c7-4399-9f37-344d0daaefbc"
 			variableName="customerBillingPayload" mimeType="application/json" />
 		<flow-ref doc:name="oauth-header-generator-soapHeader"
@@ -98,7 +98,7 @@ ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
 			
                 ns13#customFieldList:{
                 	
-                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_project"):{ value @("internalId" : vars.customerBillingPayload.nsProjectInternalId ) : ""},
+                        customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_project"):{ value @("internalId" : vars.customerBillingPayload.projectInternalId ) : ""},
                         
                         customField  @("xsi:type":"BooleanCustomFieldRef", "scriptId":"custrecord_exportedfromsfdc"):{ value : "true" },
                         
@@ -116,15 +116,15 @@ ns ns13 urn:customization_2020_1.setup.webservices.netsuite.com
                         
                         customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneInternalId ) : ""},
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_line_est_completion_date"):{ value : vars.customerBillingPayload.lineEstimatedCompletionDate + "T00:00:00.000Z" },
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_line_est_completion_date"):{ value : if(vars.customerBillingPayload.lineEstimatedCompletionDate != null) (vars.customerBillingPayload.lineEstimatedCompletionDate ++ "T00:00:00.000Z") else "" },
                         
                         customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_comment"):{ value : vars.customerBillingPayload.lineComment },
                         
                         customField  @("xsi:type":"SelectCustomFieldRef", "scriptId":"custrecord_cbs_sales_order"):{ value @("internalId" : vars.customerBillingPayload.salesOrderInternalId ) : ""},
                         
-                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone_sequence"):{ value @("internalId" : vars.customerBillingPayload.lineMilestoneSequence ) : ""},
+                        customField  @("xsi:type":"StringCustomFieldRef", "scriptId":"custrecord_cbs_line_milestone_sequence"):{ value : vars.customerBillingPayload.lineMilestoneSequence },
                         
-                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_drop_dead_date"):{ value : vars.customerBillingPayload.lineDropDeadDate + "T00:00:00.000Z"}
+                        customField  @("xsi:type":"DateCustomFieldRef", "scriptId":"custrecord_cbs_drop_dead_date"):{ value : if (vars.customerBillingPayload.lineDropDeadDate != null) (vars.customerBillingPayload.lineDropDeadDate ++ "T00:00:00.000Z") else ""}
                                                                        
 }
 
@@ -175,13 +175,35 @@ payload]]></ee:set-variable>
 					<logger level="INFO" doc:name="Logger" doc:id="c536c764-48e4-4e7d-9d1a-a0618a04108f" message="#[error.description]" />
 					<ee:transform doc:name="Transform Message" doc:id="6705b014-c859-40d4-811c-c98a06e58bfc" >
 						<ee:message >
-							<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	//errormessage
-}]]></ee:set-payload>
 						</ee:message>
+						<ee:variables >
+							<ee:set-variable variableName="logData" ><![CDATA[%dw 2.0
+output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	customerBillingSchedule: {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
+---
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsCustomerBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-variable>
+						</ee:variables>
 					</ee:transform>
 					<anypoint-mq:publish doc:name="Publish" doc:id="44038635-4988-459c-87ca-188d29e4b43f" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
 						<anypoint-mq:properties ><![CDATA[#[output application/java
@@ -202,7 +224,7 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 
 ---
 {
-	recordID: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
+	externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 	internalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 	syncedToNS: true
 }]]></ee:set-payload>
@@ -262,7 +284,7 @@ output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 ---
 {
-	nsCustomerBilling: {
+	customerBillingSchedule: {
 		externalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@externalId,
 		netsuiteInternalId: vars.responsePayload.body.ns0#upsertListResponse.ns0#writeResponseList.ns0#writeResponse.ns0#baseRef.@internalId,
 		syncedToNS: true
@@ -271,7 +293,7 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger - BEFOREE MQ" doc:id="c86670fe-451c-4836-84e5-ddc682dbd257" message="#[payload]" />
-				<anypoint-mq:publish doc:name="Publish" doc:id="85c0391d-0e64-4361-800b-eda28501b69e" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
+				<anypoint-mq:publish doc:name="Publish_to_ResponseQueue" doc:id="85c0391d-0e64-4361-800b-eda28501b69e" config-ref="Anypoint_MQ_Config" destination="${secure::mq.publish-name}">
 			<anypoint-mq:properties ><![CDATA[#[output application/java
 ---
 {
@@ -291,16 +313,39 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 					<ee:message>
 						<ee:set-payload><![CDATA[%dw 2.0
 output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	customerBillingSchedule: {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsCustomerBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
-				<anypoint-mq:publish doc:name="Publish" doc:id="1f19dcb3-712f-4091-ac55-6b5d71f034e7" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue"/>
+				<anypoint-mq:publish doc:name="Publish_to_ErrorQueue" doc:id="1f19dcb3-712f-4091-ac55-6b5d71f034e7" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue"/>
 			</otherwise>
 		</choice>
-		<logger level="INFO" doc:name="Logger" doc:id="f300ee29-0599-4224-8eb1-ab8da6bbf15a" />
-		<flow-ref doc:name="log-payload" doc:id="51acd818-6de2-4b4e-95f2-239fcc8e258d" name="log-payload"/>
+		<logger level="INFO" doc:name="Logger-Print Payload" doc:id="f300ee29-0599-4224-8eb1-ab8da6bbf15a" message="#[payload]"/>
+		<async doc:name="Async" doc:id="70a7d7ed-8855-4083-8348-0284f6cbb439" >
+			<flow-ref doc:name="log-payload" doc:id="51acd818-6de2-4b4e-95f2-239fcc8e258d" name="log-payload" />
+		</async>
 	
 	</sub-flow>
 	<sub-flow name="customerBilling-syncback-implementation" doc:id="d1b4e7cf-0f8e-4290-a2b8-769942c790bd" >
@@ -474,10 +519,30 @@ payload]]></ee:set-variable>
 						<ee:message >
 							<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
+ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	customerBillingSchedule: {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//errormessage
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsCustomerBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 						</ee:message>
 					</ee:transform>
 					<anypoint-mq:publish doc:name="Publish" doc:id="b461258a-845d-4c4c-848b-5fe99c51e878" config-ref="Anypoint_MQ_Config" destination="project-setup-DL-queue" >
@@ -538,10 +603,29 @@ ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
 						<ee:set-payload ><![CDATA[%dw 2.0
 output application/json
 ns ns0 urn:messages_2020_1.platform.webservices.netsuite.com
+ns ns01 urn:core_2020_1.platform.webservices.netsuite.com
+
+var failurersp = {
+	customerBillingSchedule: {
+		netsuiteInternalId: null,
+		externalId: vars.responsePayload.body.ns0#upsertListResponse.writeResponseList.writeResponse.baseRef.@externalId,
+		errormessage: vars.responsePayload.body.upsertListResponse.writeResponseList.writeResponse.status.statusDetail.message,
+		syncedToNS: false
+	}
+}
 ---
-{
-	//error message
-}]]></ee:set-payload>
+[{
+	initialPayload: vars.responsePayload,
+	payloadForTarget: failurersp,
+	objPrefix: "FEP",
+	interfaceName: "nsCustomerBillingSchedule",
+	sourceName: "Salesforce",
+	targetName: "Netsuite",
+	correlationId: vars.inputProperties.correlationId,
+	resourcePath: "MQ",
+	httpMethod: "MQ"
+
+}]]]></ee:set-payload>
 					</ee:message>
 				</ee:transform>
 				<logger level="INFO" doc:name="Logger" doc:id="a0aecba8-cab4-42e3-82d4-9d6fb89cac9f" />
